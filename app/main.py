@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routes import health, stories, trace, ask
+from app.routes import health, stories, trace, ask, hot_topics
 
 app = FastAPI(title="SourceTrace API")
 
@@ -16,3 +16,4 @@ app.include_router(health.router, prefix="/api/v1")
 app.include_router(stories.router, prefix="/api/v1")
 app.include_router(trace.router, prefix="/api/v1")
 app.include_router(ask.router, prefix="/api/v1")
+app.include_router(hot_topics.router, prefix="/api/v1")
