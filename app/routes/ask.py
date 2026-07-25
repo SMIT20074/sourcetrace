@@ -1,9 +1,12 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
+from groq import Groq
 from app.services.db import supabase
 from app.services.cache import get_cached, set_cached
+from app.config import GROQ_API_KEY
 
 router = APIRouter()
+client = Groq(api_key=GROQ_API_KEY)
 
 STOPWORDS = {"what", "happened", "with", "the", "about", "does", "did", "have", "has", "this", "that", "who", "when", "where", "why", "how"}
 
@@ -26,11 +29,7 @@ def ask_question(request: AskRequest):
     keywords = [w for w in words if w not in STOPWORDS]
 
     if not keywords:
-        result = {
-            "answer": "I don't have sufficient verified evidence to answer this.",
-            "citations": [],
-            "confidence": "none"
-        }
+        result = {"answer": "I don't have sufficient verified evidence to answer this.", "citations": [], "confidence": "none"}
         set_cached(cache_key, result)
         return result
 
@@ -50,27 +49,48 @@ def ask_question(request: AskRequest):
             unique_stories.append(story)
 
     if not unique_stories:
-        result = {
-            "answer": "I don't have sufficient verified evidence to answer this.",
-            "citations": [],
-            "confidence": "none"
-        }
+        result = {"answer": "I don't have sufficient verified evidence to answer this.", "citations": [], "confidence": "none"}
         set_cached(cache_key, result)
         return result
 
-    top_matches = unique_stories[:3]
-    summary_lines = [f"- {s['headline']} ({s['url']})" for s in top_matches]
+    top_matches = unique_stories[:5]
+    context_blocks = []
+    for i, s in enumerate(top_matches):
+        context_blocks.append(f"[Article {i+1}]\nHeadline: {s['headline']}\nSnippet: {s.get('snippet', '')}\nPublished: {s.get('published_at', '')}")
+    context_text = "\n\n".join(context_blocks)
 
-    answer = (
-        f"Based on {len(top_matches)} verified article(s) in the database, here's what's been reported:\n"
-        + "\n".join(summary_lines)
-    )
+    prompt = f"""You are answering a question using ONLY the verified articles provided below.
+
+STRICT RULES:
+- Use ONLY the information in the articles below. Do not use any outside knowledge.
+- If the articles do not contain enough information to answer the question, say exactly: "I don't have sufficient verified evidence to answer this."
+- Never speculate, guess, or fill in gaps with assumptions.
+- Do not call anything "true" or "false" -- only describe what the articles report.
+- Keep the answer concise (2-4 sentences).
+
+VERIFIED ARTICLES:
+{context_text}
+
+QUESTION: {request.question}
+
+ANSWER:"""
+
+    try:
+        completion = client.chat.completions.create(
+            model="llama-3.3-70b-versatile",
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.3,
+            max_tokens=300
+        )
+        answer_text = completion.choices[0].message.content.strip()
+    except Exception:
+        top_lines = [f"- {s['headline']} ({s['url']})" for s in top_matches[:3]]
+        answer_text = f"Based on {len(top_matches[:3])} verified article(s):\n" + "\n".join(top_lines)
 
     result = {
-        "answer": answer,
+        "answer": answer_text,
         "citations": [{"headline": s["headline"], "url": s["url"]} for s in top_matches],
         "confidence": "based on available verified sources only"
     }
-
     set_cached(cache_key, result)
     return result
