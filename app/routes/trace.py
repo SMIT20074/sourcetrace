@@ -1,8 +1,9 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from datetime import datetime, timezone
 from app.services.db import supabase
 from app.services.dedup import compute_similarity, rank_by_originality
 from app.services.scoring import calculate_confidence
+from app.services.cache import get_cached, set_cached
 
 router = APIRouter()
 
@@ -12,11 +13,25 @@ STALE_AFTER_HOURS = 48
 
 @router.get("/trace")
 def trace_topic(topic: str):
-    response = supabase.table("stories").select("*").ilike("headline", f"%{topic}%").execute()
+    if not topic or not topic.strip():
+        raise HTTPException(status_code=400, detail="Topic cannot be empty.")
+
+    cache_key = f"trace:{topic.lower().strip()}"
+    cached = get_cached(cache_key)
+    if cached:
+        return cached
+
+    try:
+        response = supabase.table("stories").select("*").ilike("headline", f"%{topic}%").limit(30).execute()
+    except Exception:
+        raise HTTPException(status_code=503, detail="Could not reach the database. Please try again shortly.")
+
     candidates = response.data
 
     if not candidates:
-        return {"message": "No stories found for this topic."}
+        result = {"message": "No stories found for this topic."}
+        set_cached(cache_key, result)
+        return result
 
     anchor = candidates[0]
     real_cluster = [anchor]
@@ -51,12 +66,11 @@ def trace_topic(topic: str):
         s["headline"] != ranked["original_source"]["headline"] for s in url_check.data
     )
 
-    # Silence detection -- which known sources did NOT cover this cluster
     all_sources = supabase.table("sources").select("id, name").execute()
     covering_source_ids = {s["source_id"] for s in real_cluster if s.get("source_id")}
     silent_sources = [s["name"] for s in all_sources.data if s["id"] not in covering_source_ids]
 
-    return {
+    result = {
         "original_source": ranked["original_source"],
         "syndicated_sources": ranked["syndicated_sources"],
         "confidence": confidence,
@@ -64,3 +78,6 @@ def trace_topic(topic: str):
         "silent_sources": silent_sources,
         "note": "Only articles with meaningfully similar content are counted as confirmations, not just keyword matches. 'silent_sources' lists known outlets in our database that have not covered this specific story."
     }
+
+    set_cached(cache_key, result)
+    return result
