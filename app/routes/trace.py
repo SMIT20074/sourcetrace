@@ -1,4 +1,5 @@
 from fastapi import APIRouter
+from datetime import datetime, timezone
 from app.services.db import supabase
 from app.services.dedup import compute_similarity, rank_by_originality
 from app.services.scoring import calculate_confidence
@@ -6,6 +7,7 @@ from app.services.scoring import calculate_confidence
 router = APIRouter()
 
 SIMILARITY_THRESHOLD = 0.3
+STALE_AFTER_HOURS = 48
 
 
 @router.get("/trace")
@@ -29,9 +31,36 @@ def trace_topic(topic: str):
     ranked = rank_by_originality(real_cluster)
     confidence = calculate_confidence(real_cluster, ranked["original_source"])
 
+    published_at_str = ranked["original_source"].get("published_at")
+    is_stale = False
+    hours_since_published = None
+    if published_at_str:
+        published_at = datetime.fromisoformat(published_at_str.replace("Z", "+00:00"))
+        now = datetime.now(timezone.utc)
+        hours_since_published = round((now - published_at).total_seconds() / 3600, 1)
+        is_stale = hours_since_published > STALE_AFTER_HOURS
+
+    confidence["staleness"] = {
+        "hours_since_published": hours_since_published,
+        "is_stale": is_stale,
+        "note": "This confidence score may be outdated and hasn't been re-verified recently." if is_stale else "Recently verified."
+    }
+
+    url_check = supabase.table("stories").select("*").eq("url", ranked["original_source"]["url"]).execute()
+    has_correction = len(url_check.data) > 1 and any(
+        s["headline"] != ranked["original_source"]["headline"] for s in url_check.data
+    )
+
+    # Silence detection -- which known sources did NOT cover this cluster
+    all_sources = supabase.table("sources").select("id, name").execute()
+    covering_source_ids = {s["source_id"] for s in real_cluster if s.get("source_id")}
+    silent_sources = [s["name"] for s in all_sources.data if s["id"] not in covering_source_ids]
+
     return {
         "original_source": ranked["original_source"],
         "syndicated_sources": ranked["syndicated_sources"],
         "confidence": confidence,
-        "note": "Only articles with meaningfully similar content are counted as confirmations, not just keyword matches."
+        "correction_detected": has_correction,
+        "silent_sources": silent_sources,
+        "note": "Only articles with meaningfully similar content are counted as confirmations, not just keyword matches. 'silent_sources' lists known outlets in our database that have not covered this specific story."
     }
