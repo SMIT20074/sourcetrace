@@ -16,6 +16,10 @@
       "dest": "app/main.py"
     },
     {
+      "src": "/",
+      "dest": "/index.html"
+    },
+    {
       "src": "/(.*)",
       "dest": "/$1"
     }
