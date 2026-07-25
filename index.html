@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>SourceTrace - Precision Provenance Systems</title>
+    
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "outline": "#787680",
+                        "outline-variant": "#c8c5d0",
+                        "on-primary": "#ffffff",
+                        "inverse-on-surface": "#f0f1f2",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-container": "#009668",
+                        "on-surface-variant": "#47464f",
+                        "primary-fixed": "#e3dfff",
+                        "primary": "#1e1b4b",
+                        "secondary": "#4648d4",
+                        "on-secondary": "#ffffff",
+                        "on-surface": "#191c1d",
+                        "surface-container-highest": "#e1e3e4",
+                        "surface": "#f8f9fa",
+                        "surface-container-high": "#e7e8e9",
+                        "on-error-container": "#93000a",
+                        "primary-container": "#1e1b4b",
+                        "tertiary": "#160700",
+                        "background": "#f8f9fa",
+                        "surface-variant": "#e1e3e4",
+                        "surface-container": "#edeeef",
+                        "on-background": "#191c1d",
+                        "error": "#ba1a1a"
+                    },
+                    fontFamily: {
+                        sans: ["Inter", "sans-serif"],
+                        display: ["Geist", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .shimmer {
+            background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-background text-on-background flex flex-col font-sans">
+
+    <!-- Top Navigation -->
+    <nav class="bg-white sticky top-0 z-50 border-b border-outline-variant/30 shadow-sm">
+        <div class="flex justify-between items-center w-full px-6 md:px-12 max-w-7xl mx-auto h-20">
+            <div class="flex items-center justify-between w-full">
+                <div class="text-2xl font-display font-bold text-primary flex items-center">
+                    <span class="material-symbols-outlined mr-2 text-secondary text-3xl">fingerprint</span>
+                    SourceTrace
+                </div>
+                <div class="flex items-center gap-6">
+                    <a class="font-medium text-sm uppercase tracking-wider text-primary border-b-2 border-primary pb-1" href="index.html">Home</a>
+                    <a class="font-medium text-sm uppercase tracking-wider text-on-surface-variant hover:text-primary transition-colors" href="how-we-score.html">How We Score</a>
+                    <a class="font-medium text-sm uppercase tracking-wider text-on-surface-variant hover:text-primary transition-colors" href="hot-topics.html">Hot Topics</a>
+                    <a class="font-medium text-sm uppercase tracking-wider text-on-surface-variant hover:text-primary transition-colors" href="about.html">About</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-6 md:px-12 py-12 md:py-16">
+        
+        <!-- Hero Section -->
+        <section class="text-center max-w-3xl mx-auto mb-16">
+            <h1 class="font-display text-4xl md:text-5xl font-extrabold text-primary mb-6 tracking-tight">
+                Trace the Source. Not the Noise.
+            </h1>
+            <p class="text-lg text-on-surface-variant mb-10 leading-relaxed max-w-2xl mx-auto">
+                Advanced forensic analysis for the news ecosystem. Verify article origins, analyze coverage overlap, and discover missing voices.
+            </p>
+            
+            <!-- Search Form -->
+            <div class="max-w-2xl mx-auto mb-6">
+                <form id="search-form" class="flex items-center bg-white border border-outline-variant/60 rounded-2xl p-2 shadow-md hover:shadow-lg focus-within:ring-2 focus-within:ring-secondary focus-within:border-secondary transition-all">
+                    <span class="material-symbols-outlined ml-3 text-outline">search</span>
+                    <input autocomplete="off" id="search-input" class="flex-grow border-none focus:ring-0 text-base bg-transparent px-4 py-2 outline-none" name="q" placeholder="Enter a news topic (e.g. Cricket World Cup)" type="text" required/>
+                    <button class="bg-primary text-on-primary px-6 py-3 rounded-xl font-semibold text-sm flex items-center gap-2 hover:bg-neutral-800 active:scale-95 transition-all" type="submit">
+                        TRACE <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                    </button>
+                </form>
+            </div>
+            
+            <!-- Quick Tags -->
+            <div class="flex flex-wrap justify-center gap-3" id="quick-tags">
+                <button class="px-4 py-1.5 rounded-full border border-outline-variant hover:bg-surface-container-low text-sm font-medium transition-colors" data-topic="India Protests">India Protests</button>
+                <button class="px-4 py-1.5 rounded-full border border-outline-variant hover:bg-surface-container-low text-sm font-medium transition-colors" data-topic="Cricket World Cup">Cricket World Cup</button>
+                <button class="px-4 py-1.5 rounded-full border border-outline-variant hover:bg-surface-container-low text-sm font-medium transition-colors" data-topic="Education Policy">Education Policy</button>
+            </div>
+        </section>
+
+        <!-- Mode Indicator Alert Banner -->
+        <div id="mode-banner" class="hidden max-w-5xl mx-auto mb-8 bg-amber-50 border border-amber-200 text-amber-800 px-4 py-3 rounded-xl flex items-center gap-3 text-sm">
+            <span class="material-symbols-outlined text-amber-600">offline_bolt</span>
+            <div>
+                <strong>Local Fallback Mode Active:</strong> Using high-fidelity local mock data because the backend API server is offline. Run your backend server to enable live checking.
+            </div>
+        </div>
+
+        <!-- Dashboard Layout -->
+        <div id="dashboard" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-8 max-w-6xl mx-auto">
+            
+            <!-- Left Sidebar filters & stats -->
+            <aside class="lg:col-span-3 space-y-6">
+                <div class="bg-white border border-outline-variant/40 rounded-2xl p-6 shadow-sm">
+                    <h3 class="font-display text-sm font-bold uppercase tracking-wider text-outline mb-4">Verification Stats</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <span class="text-xs text-outline block">Confidence Status</span>
+                            <span id="stat-status" class="text-lg font-bold">N/A</span>
+                        </div>
+                        <div>
+                            <span class="text-xs text-outline block">Syndications Count</span>
+                            <span id="stat-syndicated" class="text-lg font-bold">0 Outlets</span>
+                        </div>
+                        <div>
+                            <span class="text-xs text-outline block">Corrections History</span>
+                            <span id="stat-corrections" class="text-lg font-bold">None</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white border border-outline-variant/40 rounded-2xl p-6 shadow-sm">
+                    <h3 class="font-display text-sm font-bold uppercase tracking-wider text-outline mb-4">Silent Outlets</h3>
+                    <p class="text-xs text-outline-variant mb-4">Major outlets that have not reported on this topic:</p>
+                    <ul class="space-y-2 text-sm font-medium text-on-surface-variant" id="silent-sources-list">
+                        <li class="flex items-center gap-2 text-outline"><span class="material-symbols-outlined text-xs">pending</span>None listed</li>
+                    </ul>
+                </div>
+            </aside>
+
+            <!-- Center Content Stream -->
+            <section class="lg:col-span-9 space-y-6">
+                
+                <!-- AI Smart Answer Box -->
+                <div id="ai-answer-box" class="bg-gradient-to-br from-indigo-50/50 to-white border border-outline-variant/50 rounded-2xl p-6 shadow-sm">
+                    <div class="flex items-center gap-2 mb-4 text-secondary">
+                        <span class="material-symbols-outlined">psychology</span>
+                        <h3 class="font-display font-bold text-base">AI Synthesis & Citations</h3>
+                    </div>
+                    <p id="ai-answer-text" class="text-on-surface-variant leading-relaxed text-sm md:text-base">
+                        Waiting for search...
+                    </p>
+                    
+                    <div class="mt-6 pt-4 border-t border-outline-variant/30 hidden" id="ai-citations-container">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-outline mb-2">Sources Referenced:</h4>
+                        <div class="flex flex-wrap gap-2" id="ai-citations-chips"></div>
+                    </div>
+                </div>
+
+                <!-- Trace Result Cards -->
+                <div class="space-y-6">
+                    <h2 class="font-display text-lg font-bold text-primary">Provenance Trace</h2>
+                    
+                    <!-- Original Source Card -->
+                    <div id="original-source-card" class="bg-white border border-outline-variant/40 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="bg-emerald-50 text-emerald-700 px-3 py-1 rounded-md text-xs font-bold uppercase tracking-wider">Original Source</span>
+                            <span id="published-time" class="text-xs text-outline">N/A</span>
+                        </div>
+                        
+                        <h3 id="source-headline" class="font-display text-xl font-bold text-primary mb-3">No topic traced</h3>
+                        <p id="source-snippet" class="text-on-surface-variant text-sm mb-4 leading-relaxed italic">
+                            Enter a query above to start tracing news provenance.
+                        </p>
+                        
+                        <div class="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-outline-variant/30">
+                            <span id="outlet-name" class="font-semibold text-sm text-secondary">N/A</span>
+                            <a id="source-link" class="flex items-center gap-1 text-primary text-sm hover:underline font-bold" href="#" target="_blank">
+                                Open Original Article <span class="material-symbols-outlined text-[16px]">open_in_new</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Corrections Detection Alert Banner -->
+                    <div id="correction-banner" class="hidden bg-amber-50 border border-amber-200 text-amber-800 p-5 rounded-2xl flex gap-3">
+                        <span class="material-symbols-outlined text-amber-600 shrink-0">warning</span>
+                        <div>
+                            <h4 class="font-bold text-sm mb-1">Correction Detected</h4>
+                            <p class="text-xs text-amber-700 leading-relaxed">
+                                Our provenance tracker detected that this story has updated or modified headlines after its initial release. View original citations above for the exact diff details.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Confidence Factors Breakdown -->
+                    <div id="confidence-card" class="bg-white border border-outline-variant/40 rounded-2xl p-6 shadow-sm">
+                        <div class="flex items-center justify-between mb-4">
+                            <h4 class="font-display text-sm font-bold uppercase tracking-wider text-outline">Confidence Analysis</h4>
+                            <span id="confidence-score-badge" class="text-lg font-extrabold text-secondary">N/A</span>
+                        </div>
+                        <!-- Confidence Bar -->
+                        <div class="w-full bg-slate-100 rounded-full h-3 mb-6 overflow-hidden">
+                            <div id="confidence-progress" class="bg-secondary h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+                        </div>
+                        <h5 class="text-xs font-bold text-outline uppercase tracking-wider mb-3">Verification Factors:</h5>
+                        <ul id="confidence-factors" class="space-y-2 text-sm text-on-surface-variant"></ul>
+                    </div>
+
+                    <!-- Syndication List Card -->
+                    <div id="syndication-card" class="bg-white border border-outline-variant/40 rounded-2xl p-6 shadow-sm">
+                        <h4 class="font-display text-sm font-bold uppercase tracking-wider text-outline mb-4">Syndicated Coverage Feed</h4>
+                        <div class="divide-y divide-outline-variant/20" id="syndicated-list">
+                            <p class="text-sm text-outline-variant py-2">No syndicated matches.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+        </div>
+
+        <!-- Skeleton Loading State (Shown during searches) -->
+        <div id="skeleton-loader" class="hidden space-y-8 max-w-6xl mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <!-- Left Sidebar Simmer -->
+                <div class="lg:col-span-3 space-y-6">
+                    <div class="bg-white border border-outline-variant/40 rounded-2xl p-6 h-48 shimmer"></div>
+                    <div class="bg-white border border-outline-variant/40 rounded-2xl p-6 h-48 shimmer"></div>
+                </div>
+                <!-- Right Stream Simmer -->
+                <div class="lg:col-span-9 space-y-6">
+                    <div class="bg-white border border-outline-variant/40 rounded-2xl p-8 h-48 shimmer"></div>
+                    <div class="bg-white border border-outline-variant/40 rounded-2xl p-8 h-72 shimmer"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Static Welcome State -->
+        <div id="welcome-state" class="text-center max-w-xl mx-auto py-16">
+            <span class="material-symbols-outlined text-outline-variant text-6xl mb-4">search_insights</span>
+            <h3 class="font-display font-semibold text-lg text-primary mb-2">No Topic Traced Yet</h3>
+            <p class="text-sm text-outline">
+                Search a topic or select one of the quick tags above to trace verified news provenance.
+            </p>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-outline-variant/30 mt-auto shadow-inner">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 py-10 px-6 md:px-12">
+            <div class="space-y-4">
+                <div class="font-display font-bold text-lg text-primary flex items-center">
+                    <span class="material-symbols-outlined mr-2 text-secondary">fingerprint</span>
+                    SourceTrace Systems
+                </div>
+                <p class="text-sm text-on-surface-variant max-w-sm">Precision Provenance Systems for institutional and independent forensic news analysis.</p>
+            </div>
+            <div class="flex flex-col md:items-end justify-between gap-6">
+                <nav class="flex gap-6 text-sm text-on-surface-variant font-medium">
+                    <a class="hover:text-primary transition-colors" href="#">About</a>
+                    <a class="hover:text-primary transition-colors" href="#">Privacy</a>
+                    <a class="hover:text-primary transition-colors" href="#">Methodology</a>
+                </nav>
+                <div class="text-xs text-outline">
+                    © 2026 SourceTrace Provenance Systems. All rights reserved.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Interactive script logic -->
+    <script>
+        // High fidelity mock data for offline fallback
+        const MOCK_DATA = {
+            "cricket world cup": {
+                "trace": {
+                    "original_source": {
+                        "headline": "ICC officially announces tournament schedule and host venues for upcoming World Cup",
+                        "url": "https://www.cricketweekly.org/icc-world-cup-schedule",
+                        "published_at": "2026-07-25T08:00:00Z",
+                        "snippet": "The ICC has finalized all venues and dates for the Cricket World Cup, locking in stadiums across the host nations. Tickets will go on sale starting early next month."
+                    },
+                    "syndicated_sources": [
+                        { "headline": "World Cup host venues locked in by ICC", "url": "https://www.sportsglobe.com/world-cup-venues", "published_at": "2026-07-25T09:15:00Z" },
+                        { "headline": "ICC announces Cricket World Cup dates & venues", "url": "https://www.cricreport.in/icc-schedule-announced", "published_at": "2026-07-25T10:30:00Z" },
+                        { "headline": "Cricket World Cup schedule finalized", "url": "https://www.timesofsports.co.uk/world-cup-schedule", "published_at": "2026-07-25T11:45:00Z" }
+                    ],
+                    "confidence": {
+                        "score": 92,
+                        "factors": [
+                            "Matches official press release issued by the ICC central registry.",
+                            "3 independent syndicated corroborations from tier-1 sports networks.",
+                            "Metadata match on host coordination documents."
+                        ]
+                    },
+                    "correction_detected": false,
+                    "silent_sources": ["NDTV Sports", "ESPN Cricinfo"]
+                },
+                "ask": {
+                    "answer": "The ICC has officially announced the complete host venues and schedules for the upcoming Cricket World Cup. Venues have been distributed among major stadium hubs, and tickets are set to go on sale early next month.",
+                    "citations": [
+                        { "headline": "ICC Tournament Schedule announcement", "url": "https://www.cricketweekly.org/icc-world-cup-schedule" },
+                        { "headline": "SportsGlobe venues review", "url": "https://www.sportsglobe.com/world-cup-venues" }
+                    ],
+                    "confidence": "Verified"
+                }
+            },
+            "india protests": {
+                "trace": {
+                    "original_source": {
+                        "headline": "Demonstrations spark in Delhi over regional tariff updates",
+                        "url": "https://www.delhitimes.co.in/protests-tariff-updates",
+                        "published_at": "2026-07-24T14:20:00Z",
+                        "snippet": "Local union leaders call for protests following changes to regional transport tariffs. Demonstrations remain peaceful but have caused localized transit disruptions."
+                    },
+                    "syndicated_sources": [
+                        { "headline": "Delhi protests prompt traffic diversion", "url": "https://www.ndtv.com/traffic-updates-delhi", "published_at": "2026-07-24T15:45:00Z" },
+                        { "headline": "Protests erupt in Delhi over new transit taxes", "url": "https://www.timesofindia.com/protests-transit-taxes", "published_at": "2026-07-24T17:10:00Z" }
+                    ],
+                    "confidence": {
+                        "score": 78,
+                        "factors": [
+                            "Triangulated via two reputable local news networks.",
+                            "Headline modifications detected in secondary reports.",
+                            "Transit authorities issued corroborating detour route warnings."
+                        ]
+                    },
+                    "correction_detected": true,
+                    "silent_sources": ["The Hindu", "Reuters India"]
+                },
+                "ask": {
+                    "answer": "Protests have broken out in Delhi due to transport tariff changes. Traffic diversions have been implemented by local police, and while the gatherings remain peaceful, organizers are demanding a roll-back of the regional transit taxes.",
+                    "citations": [
+                        { "headline": "Delhi demonstrations overview", "url": "https://www.delhitimes.co.in/protests-tariff-updates" },
+                        { "headline": "Times of India coverage", "url": "https://www.timesofindia.com/protests-transit-taxes" }
+                    ],
+                    "confidence": "Cautionary"
+                }
+            },
+            "education policy": {
+                "trace": {
+                    "original_source": {
+                        "headline": "Ministry of Education drafts new curriculum framework for primary schools",
+                        "url": "https://www.educationgazette.gov.in/draft-curriculum",
+                        "published_at": "2026-07-23T11:00:00Z",
+                        "snippet": "The government has released a draft curriculum framework for primary education. The proposed changes focus on early language acquisition and foundation math modules."
+                    },
+                    "syndicated_sources": [
+                        { "headline": "Draft primary school curriculum released", "url": "https://www.indiascholars.com/curriculum-draft-released", "published_at": "2026-07-23T13:30:00Z" }
+                    ],
+                    "confidence": {
+                        "score": 45,
+                        "factors": [
+                            "Single source of origin (Ministry Draft portal).",
+                            "Limited primary syndicate coverage.",
+                            "Public review phase open for comments."
+                        ]
+                    },
+                    "correction_detected": false,
+                    "silent_sources": ["Times of India", "The Hindu", "NDTV"]
+                },
+                "ask": {
+                    "answer": "The Ministry of Education has drafted a revised primary school curriculum. The proposal introduces upgraded math and language modules and is currently open for public feedback.",
+                    "citations": [
+                        { "headline": "Government draft curriculum", "url": "https://www.educationgazette.gov.in/draft-curriculum" }
+                    ],
+                    "confidence": "Low Confidence (Early Stage)"
+                }
+            }
+        };
+
+        const API_BASE = "http://localhost:8000/api/v1";
+
+        // DOM elements
+        const searchForm = document.getElementById("search-form");
+        const searchInput = document.getElementById("search-input");
+        const welcomeState = document.getElementById("welcome-state");
+        const skeletonLoader = document.getElementById("skeleton-loader");
+        const dashboard = document.getElementById("dashboard");
+        const modeBanner = document.getElementById("mode-banner");
+        
+        const statStatus = document.getElementById("stat-status");
+        const statSyndicated = document.getElementById("stat-syndicated");
+        const statCorrections = document.getElementById("stat-corrections");
+        const silentSourcesList = document.getElementById("silent-sources-list");
+        
+        const aiAnswerText = document.getElementById("ai-answer-text");
+        const aiCitationsContainer = document.getElementById("ai-citations-container");
+        const aiCitationsChips = document.getElementById("ai-citations-chips");
+        
+        const sourceHeadline = document.getElementById("source-headline");
+        const sourceSnippet = document.getElementById("source-snippet");
+        const outletName = document.getElementById("outlet-name");
+        const publishedTime = document.getElementById("published-time");
+        const sourceLink = document.getElementById("source-link");
+        
+        const correctionBanner = document.getElementById("correction-banner");
+        
+        const confidenceScoreBadge = document.getElementById("confidence-score-badge");
+        const confidenceProgress = document.getElementById("confidence-progress");
+        const confidenceFactors = document.getElementById("confidence-factors");
+        
+        const syndicatedList = document.getElementById("syndicated-list");
+
+        // Event listener for search form
+        searchForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const query = searchInput.value.trim();
+            if (query) {
+                performSearch(query);
+            }
+        });
+
+        // Event listener for quick tags
+        document.getElementById("quick-tags").addEventListener("click", (e) => {
+            if (e.target.tagName === "BUTTON") {
+                const topic = e.target.getAttribute("data-topic");
+                searchInput.value = topic;
+                performSearch(topic);
+            }
+        });
+
+        async function performSearch(query) {
+            // Reset UI
+            welcomeState.classList.add("hidden");
+            dashboard.classList.add("hidden");
+            modeBanner.classList.add("hidden");
+            skeletonLoader.classList.remove("hidden");
+
+            try {
+                // Try fetching live data from backend APIs in parallel
+                const [traceRes, askRes] = await Promise.all([
+                    fetch(`${API_BASE}/trace?topic=${encodeURIComponent(query)}`),
+                    fetch(`${API_BASE}/ask`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ question: query })
+                    })
+                ]);
+
+                if (!traceRes.ok || !askRes.ok) {
+                    throw new Error("Backend endpoints returned error");
+                }
+
+                const traceData = await traceRes.json();
+                const askData = await askRes.json();
+
+                renderResults(traceData, askData, false);
+            } catch (err) {
+                console.warn("Backend API not reachable. Using offline Mock Mode.", err);
+                
+                // Simulate network latency for mock data loading feel
+                setTimeout(() => {
+                    // Try to match search term with mock data keys, otherwise generate fallback
+                    const cleanQuery = query.toLowerCase();
+                    let matchedMock = null;
+                    
+                    for (const key in MOCK_DATA) {
+                        if (cleanQuery.includes(key) || key.includes(cleanQuery)) {
+                            matchedMock = MOCK_DATA[key];
+                            break;
+                        }
+                    }
+
+                    if (!matchedMock) {
+                        matchedMock = generateDynamicMock(query);
+                    }
+
+                    renderResults(matchedMock.trace, matchedMock.ask, true);
+                }, 1000);
+            }
+        }
+
+        function renderResults(trace, ask, isMock) {
+            // Hide Loader & Show Dashboard
+            skeletonLoader.classList.add("hidden");
+            dashboard.classList.remove("hidden");
+
+            if (isMock) {
+                modeBanner.classList.remove("hidden");
+            } else {
+                modeBanner.classList.add("hidden");
+            }
+
+            // Handle empty results returned by backend
+            if (trace.message) {
+                sourceHeadline.innerText = "No source match found";
+                sourceSnippet.innerText = "We couldn't track a verified original source in the database for this topic.";
+                outletName.innerText = "N/A";
+                publishedTime.innerText = "N/A";
+                sourceLink.href = "#";
+                
+                confidenceScoreBadge.innerText = "0%";
+                confidenceProgress.style.width = "0%";
+                confidenceFactors.innerHTML = `<li class="text-xs text-outline">No assessment factors listed.</li>`;
+                syndicatedList.innerHTML = `<p class="text-xs text-outline py-4">No additional syndicated outlets detected for this story.</p>`;
+                
+                statStatus.innerText = "No Coverage";
+                statStatus.className = "text-lg font-bold text-rose-500";
+                statSyndicated.innerText = "0 Outlets";
+                statCorrections.innerText = "Clean History";
+                statCorrections.className = "text-lg font-bold text-neutral-700";
+                
+                silentSourcesList.innerHTML = `<li class="text-xs text-outline">No silent sources listing.</li>`;
+                
+                aiAnswerText.innerText = ask.answer || "No synthesis available for this query.";
+                aiCitationsContainer.classList.add("hidden");
+                return;
+            }
+
+            // 1. Stats updates
+            const score = trace.confidence?.score || 0;
+            statStatus.innerText = score >= 75 ? "High Trust" : (score >= 40 ? "Cautionary" : "Low Trust");
+            statStatus.className = `text-lg font-bold ${score >= 75 ? 'text-emerald-600' : (score >= 40 ? 'text-amber-500' : 'text-rose-500')}`;
+            
+            const syndicatedCount = trace.syndicated_sources?.length || 0;
+            statSyndicated.innerText = `${syndicatedCount} Outlet${syndicatedCount !== 1 ? 's' : ''}`;
+            
+            statCorrections.innerText = trace.correction_detected ? "Detected Updates" : "Clean History";
+            statCorrections.className = `text-lg font-bold ${trace.correction_detected ? 'text-amber-600' : 'text-neutral-700'}`;
+
+            // 2. Silent sources list
+            silentSourcesList.innerHTML = "";
+            if (trace.silent_sources && trace.silent_sources.length > 0) {
+                trace.silent_sources.forEach(src => {
+                    const li = document.createElement("li");
+                    li.className = "flex items-center gap-2 text-xs font-semibold bg-gray-100 py-1.5 px-3 rounded-lg";
+                    li.innerHTML = `<span class="material-symbols-outlined text-[14px] text-gray-500">volume_mute</span> ${src}`;
+                    silentSourcesList.appendChild(li);
+                });
+            } else {
+                silentSourcesList.innerHTML = `<li class="text-xs text-outline">No silent sources. All major portals covered it.</li>`;
+            }
+
+            // 3. AI Answer Card
+            aiAnswerText.innerText = ask.answer || "No synthesis available for this query.";
+            if (ask.citations && ask.citations.length > 0) {
+                aiCitationsContainer.classList.remove("hidden");
+                aiCitationsChips.innerHTML = "";
+                ask.citations.forEach((cit, index) => {
+                    const a = document.createElement("a");
+                    a.href = cit.url || "#";
+                    a.target = "_blank";
+                    a.className = "bg-white border border-outline-variant/60 hover:bg-slate-50 transition-colors text-xs font-semibold px-3 py-1.5 rounded-full flex items-center gap-1 shadow-sm";
+                    a.innerHTML = `<span class="text-secondary">[${index + 1}]</span> ${cit.headline}`;
+                    aiCitationsChips.appendChild(a);
+                });
+            } else {
+                aiCitationsContainer.classList.add("hidden");
+            }
+
+            // 4. Trace Original Source Card
+            if (trace.original_source) {
+                sourceHeadline.innerText = trace.original_source.headline;
+                sourceSnippet.innerText = trace.original_source.snippet || "No article preview available.";
+                outletName.innerText = getDomainName(trace.original_source.url);
+                publishedTime.innerText = formatDate(trace.original_source.published_at);
+                sourceLink.href = trace.original_source.url || "#";
+            } else {
+                sourceHeadline.innerText = "No source match found";
+                sourceSnippet.innerText = "We couldn't track a verified original source in the database for this topic.";
+                outletName.innerText = "N/A";
+                publishedTime.innerText = "N/A";
+                sourceLink.href = "#";
+            }
+
+            // 5. Corrections banner
+            if (trace.correction_detected) {
+                correctionBanner.classList.remove("hidden");
+            } else {
+                correctionBanner.classList.add("hidden");
+            }
+
+            // 6. Confidence meter card
+            confidenceScoreBadge.innerText = `${score}%`;
+            confidenceProgress.style.width = `${score}%`;
+            confidenceProgress.className = `h-full rounded-full transition-all duration-500 ${score >= 75 ? 'bg-emerald-600' : (score >= 40 ? 'bg-amber-500' : 'bg-rose-500')}`;
+            
+            confidenceFactors.innerHTML = "";
+            const breakdown = trace.confidence?.breakdown;
+            if (breakdown) {
+                const factors = [];
+                if (breakdown.independent_confirmations > 0) {
+                    factors.push(`Independent Confirmations: +${breakdown.independent_confirmations}% (derived from syndicated coverage volume)`);
+                } else {
+                    factors.push(`No independent confirmations detected`);
+                }
+                if (breakdown.early_publication > 0) {
+                    factors.push(`Early Publication: +${breakdown.early_publication}% (verifiable timestamp sequence established)`);
+                }
+                if (breakdown.established_outlet > 0) {
+                    factors.push(`Established Outlet: +${breakdown.established_outlet}% (published by registered media node)`);
+                } else {
+                    factors.push(`Unregistered Outlet: 0% (source not in primary media node registry)`);
+                }
+                if (breakdown.neutral_language > 0) {
+                    factors.push(`Neutral Language Bias Check: +${breakdown.neutral_language}%`);
+                }
+
+                factors.forEach(fac => {
+                    const li = document.createElement("li");
+                    li.className = "flex items-start gap-2";
+                    li.innerHTML = `<span class="material-symbols-outlined text-[18px] text-emerald-600 shrink-0">check_circle</span> <span>${fac}</span>`;
+                    confidenceFactors.appendChild(li);
+                });
+            } else if (trace.confidence?.factors && trace.confidence.factors.length > 0) {
+                // Fallback for mock data factors
+                trace.confidence.factors.forEach(fac => {
+                    const li = document.createElement("li");
+                    li.className = "flex items-start gap-2";
+                    li.innerHTML = `<span class="material-symbols-outlined text-[18px] text-emerald-600 shrink-0">check_circle</span> <span>${fac}</span>`;
+                    confidenceFactors.appendChild(li);
+                });
+            } else {
+                confidenceFactors.innerHTML = `<li class="text-xs text-outline">No assessment factors listed.</li>`;
+            }
+
+            // 7. Syndication Feed
+            syndicatedList.innerHTML = "";
+            if (trace.syndicated_sources && trace.syndicated_sources.length > 0) {
+                trace.syndicated_sources.forEach(src => {
+                    const div = document.createElement("div");
+                    div.className = "py-3 flex justify-between items-start gap-4 hover:bg-slate-50 px-2 rounded-lg transition-colors";
+                    div.innerHTML = `
+                        <div>
+                            <h5 class="font-bold text-sm text-primary hover:text-secondary transition-colors">
+                                <a href="${src.url || '#'}" target="_blank">${src.headline}</a>
+                            </h5>
+                            <span class="text-xs text-secondary font-medium">${getDomainName(src.url)}</span>
+                        </div>
+                        <span class="text-xs text-outline shrink-0">${formatDate(src.published_at)}</span>
+                    `;
+                    syndicatedList.appendChild(div);
+                });
+            } else {
+                syndicatedList.innerHTML = `<p class="text-xs text-outline py-4">No additional syndicated outlets detected for this story.</p>`;
+            }
+        }
+
+        // Generate dynamic mocked response for any random query
+        function generateDynamicMock(query) {
+            const mockOutlet = ["TechNews", "Global Times", "Capital Post", "Newsmakers", "Press Trust"][Math.floor(Math.random() * 5)];
+            const score = Math.floor(Math.random() * 50) + 40; // 40 - 90
+            const capitalizedQuery = query.charAt(0).toUpperCase() + query.slice(1);
+            
+            return {
+                "trace": {
+                    "original_source": {
+                        "headline": `Exclusive report detailing recent updates on ${capitalizedQuery}`,
+                        "url": `https://www.${mockOutlet.toLowerCase().replace(/\s+/g, '')}.com/reports/${encodeURIComponent(query)}`,
+                        "published_at": new Date(Date.now() - 3600000 * 3).toISOString(),
+                        "snippet": `Sources confirm that several updates have recently emerged surrounding ${query}. Analysts suggest that this development may significantly influence regional policy in the next quarter.`
+                    },
+                    "syndicated_sources": [
+                        { "headline": `New details emerge on ${capitalizedQuery}`, "url": "https://www.newsnetwork.com/details-emerge", "published_at": new Date(Date.now() - 3600000 * 2).toISOString() },
+                        { "headline": `Analysis of the recent ${capitalizedQuery} situation`, "url": "https://www.dailyfeed.co.uk/analysis-situation", "published_at": new Date(Date.now() - 3600000).toISOString() }
+                    ],
+                    "confidence": {
+                        "score": score,
+                        "factors": [
+                            "Matches core parameters extracted from the primary reporting entity.",
+                            "Validated by cross-referencing timeline indices.",
+                            "Topic patterns suggest localized dissemination."
+                        ]
+                    },
+                    "correction_detected": Math.random() > 0.5,
+                    "silent_sources": ["BBC News", "Reuters", "The Associated Press"]
+                },
+                "ask": {
+                    "answer": `Based on verified reports, the situation regarding ${query} is evolving. First reported by ${mockOutlet}, the story covers key developments with support from subsequent syndicated reports, while some major global networks remain silent.`,
+                    "citations": [
+                        { "headline": `Exclusive report on ${capitalizedQuery}`, "url": `https://www.${mockOutlet.toLowerCase().replace(/\s+/g, '')}.com/reports` }
+                    ],
+                    "confidence": "Triangulated (Mock)"
+                }
+            };
+        }
+
+        // Helpers
+        function getDomainName(url) {
+            if (!url) return "Source Outlet";
+            try {
+                const domain = new URL(url).hostname;
+                return domain.replace("www.", "");
+            } catch (e) {
+                return "Source Outlet";
+            }
+        }
+
+        function formatDate(isoStr) {
+            if (!isoStr) return "Just now";
+            try {
+                const date = new Date(isoStr);
+                return date.toLocaleString('en-US', { 
+                    month: 'short', 
+                    day: 'numeric', 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                });
+            } catch (e) {
+                return "Recent";
+            }
+        }
+    </script>
+</body>
+</html>

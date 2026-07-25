@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>SourceTrace - How We Score</title>
+    
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Geist:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "outline": "#787680",
+                        "outline-variant": "#c8c5d0",
+                        "on-primary": "#ffffff",
+                        "inverse-on-surface": "#f0f1f2",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-container": "#009668",
+                        "on-surface-variant": "#47464f",
+                        "primary-fixed": "#e3dfff",
+                        "primary": "#1e1b4b",
+                        "secondary": "#4648d4",
+                        "on-secondary": "#ffffff",
+                        "on-surface": "#191c1d",
+                        "surface-container-highest": "#e1e3e4",
+                        "surface": "#f8f9fa",
+                        "surface-container-high": "#e7e8e9",
+                        "on-error-container": "#93000a",
+                        "primary-container": "#1e1b4b",
+                        "tertiary": "#160700",
+                        "background": "#f8f9fa",
+                        "surface-variant": "#e1e3e4",
+                        "surface-container": "#edeeef",
+                        "on-background": "#191c1d",
+                        "error": "#ba1a1a"
+                    },
+                    fontFamily: {
+                        sans: ["Inter", "sans-serif"],
+                        display: ["Geist", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .path-line {
+            background: linear-gradient(to bottom, transparent, #c8c5d0 10%, #c8c5d0 90%, transparent);
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-background text-on-background flex flex-col font-sans">
+
+    <!-- Top Navigation Bar -->
+    <nav class="bg-white sticky top-0 z-50 border-b border-outline-variant/30 shadow-sm">
+        <div class="flex justify-between items-center w-full px-6 md:px-12 max-w-7xl mx-auto h-20">
+            <div class="flex items-center justify-between w-full">
+                <div class="text-2xl font-display font-bold text-primary flex items-center">
+                    <span class="material-symbols-outlined mr-2 text-secondary text-3xl">fingerprint</span>
+                    SourceTrace
+                </div>
+                <div class="flex items-center gap-6">
+                    <a class="font-medium text-sm uppercase tracking-wider text-on-surface-variant hover:text-primary transition-colors" href="index.html">Home</a>
+                    <a class="font-medium text-sm uppercase tracking-wider text-primary border-b-2 border-primary pb-1" href="how-we-score.html">How We Score</a>
+                    <a class="font-medium text-sm uppercase tracking-wider text-on-surface-variant hover:text-primary transition-colors" href="hot-topics.html">Hot Topics</a>
+                    <a class="font-medium text-sm uppercase tracking-wider text-on-surface-variant hover:text-primary transition-colors" href="about.html">About</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl w-full mx-auto px-6 md:px-12 py-12 md:py-16 flex-grow">
+        
+        <!-- Hero Section -->
+        <section class="max-w-3xl mb-20">
+            <h1 class="font-display text-4xl font-extrabold text-primary mb-6 leading-tight">
+                Objective Evaluation of Information Provenance.
+            </h1>
+            <p class="text-lg text-on-surface-variant leading-relaxed">
+                We move beyond the binary of true and false. Our systems trace the digital lineage of information to provide a nuanced confidence score based on the weight of verifiable evidence.
+            </p>
+        </section>
+
+        <!-- Verification Path Timeline -->
+        <section class="mb-24">
+            <div class="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-x-12 gap-y-12 items-center">
+                <!-- Left Title -->
+                <div class="space-y-4">
+                    <h3 class="font-display text-2xl font-bold text-primary">The Path of Verification</h3>
+                    <p class="text-sm text-on-surface-variant leading-relaxed">
+                        Tracing the journey from raw claim to verified provenance. Every step builds upon timestamped registry entries.
+                    </p>
+                </div>
+                
+                <!-- Center timeline visual -->
+                <div class="relative flex flex-col items-center">
+                    <div class="path-line absolute top-0 bottom-0 w-0.5 z-0"></div>
+                    
+                    <!-- Step 1 -->
+                    <div class="relative z-10 flex flex-col items-center mb-16">
+                        <div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center mb-4 shadow-md">
+                            <span class="material-symbols-outlined text-xl">fingerprint</span>
+                        </div>
+                        <div class="bg-white border border-outline-variant/40 p-6 rounded-2xl w-72 text-center shadow-sm">
+                            <div class="font-display text-sm font-bold text-primary mb-2">1. Ingestion</div>
+                            <div class="text-xs text-on-surface-variant leading-relaxed">Extracting metadata, timestamps, and authorship from raw news files and feeds.</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 2 -->
+                    <div class="relative z-10 flex flex-col items-center mb-16">
+                        <div class="w-10 h-10 rounded-full bg-secondary text-white flex items-center justify-center mb-4 shadow-md">
+                            <span class="material-symbols-outlined text-xl">account_tree</span>
+                        </div>
+                        <div class="bg-white border border-outline-variant/40 p-6 rounded-2xl w-72 text-center shadow-sm">
+                            <div class="font-display text-sm font-bold text-primary mb-2">2. Lineage Mapping</div>
+                            <div class="text-xs text-on-surface-variant leading-relaxed">Mapping the chain of custody across servers and digital public archives.</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 3 -->
+                    <div class="relative z-10 flex flex-col items-center mb-16">
+                        <div class="w-10 h-10 rounded-full bg-emerald-600 text-white flex items-center justify-center mb-4 shadow-md">
+                            <span class="material-symbols-outlined text-xl">verified</span>
+                        </div>
+                        <div class="bg-white border border-outline-variant/40 p-6 rounded-2xl w-72 text-center shadow-sm">
+                            <div class="font-display text-sm font-bold text-primary mb-2">3. Consensus Scoring</div>
+                            <div class="text-xs text-on-surface-variant leading-relaxed">Cross-referencing with independent media nodes to calculate similarity and duplicates.</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 4 -->
+                    <div class="relative z-10 flex flex-col items-center">
+                        <div class="w-12 h-12 rounded-full border-2 border-primary bg-white flex items-center justify-center mb-4 shadow-md">
+                            <span class="material-symbols-outlined text-primary text-2xl">balance</span>
+                        </div>
+                        <div class="bg-primary text-white p-6 rounded-2xl w-72 text-center shadow-lg">
+                            <div class="font-display text-sm font-bold mb-2">4. Provenance Output</div>
+                            <div class="text-xs opacity-90 leading-relaxed">A final confidence score generated through weighted forensic analysis.</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Right details -->
+                <div class="space-y-8">
+                    <div>
+                        <div class="text-xs font-bold text-secondary uppercase tracking-widest mb-2">Nuance First</div>
+                        <p class="text-xs text-on-surface-variant leading-relaxed">We prioritize official documentation and public archives over single-source reports or anonymous tips.</p>
+                    </div>
+                    <div>
+                        <div class="text-xs font-bold text-emerald-600 uppercase tracking-widest mb-2">Automated Audit</div>
+                        <p class="text-xs text-on-surface-variant leading-relaxed">Our scraper algorithms perform checks against global news networks to ensure temporal accuracy.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Scoring Factors Grid -->
+        <section class="mb-24">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Confidence Boosters -->
+                <div class="bg-slate-50 rounded-[24px] p-8 border border-outline-variant/30 shadow-sm">
+                    <div class="flex items-center gap-3 mb-8 text-emerald-600">
+                        <span class="material-symbols-outlined text-3xl">trending_up</span>
+                        <h2 class="font-display text-lg font-bold text-primary">What Increases Confidence</h2>
+                    </div>
+                    <ul class="space-y-6">
+                        <li class="flex gap-4">
+                            <span class="material-symbols-outlined text-emerald-600 shrink-0">check_circle</span>
+                            <div>
+                                <strong class="block text-sm text-primary">Independent Verification</strong>
+                                <span class="text-xs text-on-surface-variant leading-relaxed">Three or more distinct entities reporting the same core event data without verbatim duplication.</span>
+                            </div>
+                        </li>
+                        <li class="flex gap-4">
+                            <span class="material-symbols-outlined text-emerald-600 shrink-0">description</span>
+                            <div>
+                                <strong class="block text-sm text-primary">Official Documentation</strong>
+                                <span class="text-xs text-on-surface-variant leading-relaxed">Supporting records from institutional archives or government registries.</span>
+                            </div>
+                        </li>
+                        <li class="flex gap-4">
+                            <span class="material-symbols-outlined text-emerald-600 shrink-0">sync</span>
+                            <div>
+                                <strong class="block text-sm text-primary">Cross-Source Consistency</strong>
+                                <span class="text-xs text-on-surface-variant leading-relaxed">Timeline alignment across varying geographical and digital locales.</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Confidence Lowerers -->
+                <div class="bg-white rounded-[24px] p-8 border border-outline-variant/40 shadow-sm">
+                    <div class="flex items-center gap-3 mb-8 text-rose-600">
+                        <span class="material-symbols-outlined text-3xl">trending_down</span>
+                        <h2 class="font-display text-lg font-bold text-primary">What Lowers Confidence</h2>
+                    </div>
+                    <ul class="space-y-6">
+                        <li class="flex gap-4">
+                            <span class="material-symbols-outlined text-rose-600 shrink-0">visibility_off</span>
+                            <div>
+                                <strong class="block text-sm text-primary">Anonymity</strong>
+                                <span class="text-xs text-on-surface-variant leading-relaxed">Lack of clear authorship or untraceable original publication source.</span>
+                            </div>
+                        </li>
+                        <li class="flex gap-4">
+                            <span class="material-symbols-outlined text-rose-600 shrink-0">history</span>
+                            <div>
+                                <strong class="block text-sm text-primary">Lack of Supporting Records</strong>
+                                <span class="text-xs text-on-surface-variant leading-relaxed">Claims that exist in a digital vacuum without contextual archives or corroborative records.</span>
+                            </div>
+                        </li>
+                        <li class="flex gap-4">
+                            <span class="material-symbols-outlined text-rose-600 shrink-0">error</span>
+                            <div>
+                                <strong class="block text-sm text-primary">Contradictory Data</strong>
+                                <span class="text-xs text-on-surface-variant leading-relaxed">Major discrepancies in logistical details (times, locations, participants) between syndicated outlets.</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Temporal & Independence Section -->
+        <section class="mb-20">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="space-y-6">
+                    <h2 class="font-display text-2xl font-bold text-primary">Temporal Reliability</h2>
+                    <p class="text-sm text-on-surface-variant leading-relaxed">
+                        Confidence isn't static. As new evidence emerges or old records are archived, our scores evolve. A "92%" today may adjust as the context around a source deepens over months or years.
+                    </p>
+                    <div class="p-6 bg-white border border-outline-variant/40 rounded-2xl shadow-sm">
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-xs font-bold uppercase tracking-wider text-outline">Confidence Trend</span>
+                            <span class="text-[10px] font-bold text-outline uppercase tracking-wider">Example Timeline</span>
+                        </div>
+                        <div class="h-16 flex items-end gap-2">
+                            <div class="bg-secondary/20 w-full h-[30%] rounded-t-sm"></div>
+                            <div class="bg-secondary/35 w-full h-[45%] rounded-t-sm"></div>
+                            <div class="bg-secondary/50 w-full h-[60%] rounded-t-sm"></div>
+                            <div class="bg-secondary/70 w-full h-[75%] rounded-t-sm"></div>
+                            <div class="bg-secondary/85 w-full h-[82%] rounded-t-sm"></div>
+                            <div class="bg-secondary w-full h-[95%] rounded-t-sm"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="space-y-6">
+                    <h2 class="font-display text-2xl font-bold text-primary">The Power of Independence</h2>
+                    <p class="text-sm text-on-surface-variant leading-relaxed">
+                        Centralized truths are vulnerable to manipulation. We rely on a mesh of independent nodes—archivists, journalists, and institutional databases—to triangulate coverage.
+                    </p>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="aspect-square bg-slate-50 border border-outline-variant/30 rounded-2xl flex flex-col justify-center items-center p-6 text-center shadow-sm">
+                            <span class="text-3xl font-extrabold text-primary mb-2">450+</span>
+                            <span class="text-[10px] font-bold text-outline uppercase tracking-wider">Validated Archives</span>
+                        </div>
+                        <div class="aspect-square bg-primary text-white rounded-2xl flex flex-col justify-center items-center p-6 text-center shadow-md">
+                            <span class="text-3xl font-extrabold text-white mb-2">99.9%</span>
+                            <span class="text-[10px] font-bold text-slate-300 uppercase tracking-wider">Uptime Reliability</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-outline-variant/30 mt-auto shadow-inner">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center py-12 px-6 md:px-12">
+            <div class="mb-6 md:mb-0">
+                <span class="font-display font-bold text-lg text-primary flex items-center">
+                    <span class="material-symbols-outlined mr-2 text-secondary">fingerprint</span>
+                    SourceTrace
+                </span>
+                <p class="text-xs text-outline font-semibold tracking-wider uppercase mt-2">© 2026 SourceTrace Information Integrity Lab.</p>
+            </div>
+            <div class="flex flex-wrap justify-center gap-6 text-sm text-on-surface-variant font-medium">
+                <a class="hover:text-primary transition-colors" href="how-we-score.html">Methodology</a>
+                <a class="hover:text-primary transition-colors" href="hot-topics.html">Hot Topics</a>
+                <a class="hover:text-primary transition-colors" href="about.html">About</a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

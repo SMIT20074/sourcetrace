@@ -59,7 +59,10 @@ def run_ingestion():
 
         print(f"\nFetching RSS feed for {name}...")
         try:
-            feed = feedparser.parse(feed_url)
+            import requests
+            headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"}
+            r = requests.get(feed_url, headers=headers, timeout=15)
+            feed = feedparser.parse(r.content)
             print(f"Found {len(feed.entries)} items in {name} feed.")
 
             for entry in feed.entries[:10]: # Process top 10 latest stories per feed
