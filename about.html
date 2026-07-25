@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html class="light scroll-smooth" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>SourceTrace - About & Methodology</title>
+    
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Geist:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "outline": "#787680",
+                        "outline-variant": "#c8c5d0",
+                        "on-primary": "#ffffff",
+                        "inverse-on-surface": "#f0f1f2",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-container": "#009668",
+                        "on-surface-variant": "#47464f",
+                        "primary-fixed": "#e3dfff",
+                        "primary": "#1e1b4b",
+                        "secondary": "#4648d4",
+                        "on-secondary": "#ffffff",
+                        "on-surface": "#191c1d",
+                        "surface-container-highest": "#e1e3e4",
+                        "surface": "#f8f9fa",
+                        "surface-container-high": "#e7e8e9",
+                        "on-error-container": "#93000a",
+                        "primary-container": "#1e1b4b",
+                        "tertiary": "#160700",
+                        "background": "#f8f9fa",
+                        "surface-variant": "#e1e3e4",
+                        "surface-container": "#edeeef",
+                        "on-background": "#191c1d",
+                        "error": "#ba1a1a"
+                    },
+                    fontFamily: {
+                        sans: ["Inter", "sans-serif"],
+                        display: ["Geist", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="min-h-screen bg-background text-on-background flex flex-col font-sans">
+
+    <!-- Top Navigation Bar -->
+    <nav class="bg-white sticky top-0 z-50 border-b border-outline-variant/30 shadow-sm">
+        <div class="flex justify-between items-center w-full px-6 md:px-12 max-w-7xl mx-auto h-20">
+            <div class="flex items-center justify-between w-full">
+                <div class="text-2xl font-display font-bold text-primary flex items-center">
+                    <span class="material-symbols-outlined mr-2 text-secondary text-3xl">fingerprint</span>
+                    SourceTrace
+                </div>
+                <div class="flex items-center gap-6">
+                    <a class="font-medium text-sm uppercase tracking-wider text-on-surface-variant hover:text-primary transition-colors" href="index.html">Home</a>
+                    <a class="font-medium text-sm uppercase tracking-wider text-on-surface-variant hover:text-primary transition-colors" href="how-we-score.html">How We Score</a>
+                    <a class="font-medium text-sm uppercase tracking-wider text-on-surface-variant hover:text-primary transition-colors" href="hot-topics.html">Hot Topics</a>
+                    <a class="font-medium text-sm uppercase tracking-wider text-primary border-b-2 border-primary pb-1" href="about.html">About</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl w-full mx-auto px-6 md:px-12 py-12 md:py-16 flex-grow">
+        
+        <!-- Hero Section -->
+        <section class="py-12 md:py-20 flex flex-col items-center text-center">
+            <div class="max-w-3xl mb-16">
+                <h1 class="font-display text-4xl md:text-5xl font-extrabold text-primary mb-6 leading-tight">
+                    Information spreads fast.<br/>SourceTrace helps you see how.
+                </h1>
+                <p class="text-lg text-on-surface-variant max-w-2xl mx-auto leading-relaxed">
+                    SourceTrace maps the journey behind a story — from the earliest identifiable report to the outlets that reported, repeated, or built upon it.
+                </p>
+                <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="hot-topics.html" class="bg-primary text-on-primary px-8 py-4 rounded-xl font-semibold text-sm hover:bg-neutral-800 transition-colors shadow-sm text-center">Explore Hot Topics</a>
+                    <a href="index.html" class="bg-white border border-outline-variant hover:bg-slate-50 text-primary px-8 py-4 rounded-xl font-semibold text-sm transition-colors shadow-sm text-center">Run Custom Search</a>
+                </div>
+            </div>
+            
+            <!-- Chain Visual Grid -->
+            <div class="w-full max-w-4xl bg-white border border-outline-variant/40 p-8 md:p-12 rounded-[24px] shadow-sm relative">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-8 md:gap-4 relative">
+                    <!-- Lines (Desktop Only) -->
+                    <div class="hidden md:block absolute top-1/2 left-0 w-full h-[2px] bg-slate-100 -translate-y-1/2 -z-0"></div>
+                    
+                    <!-- Node 1 -->
+                    <div class="flex flex-col items-center z-10 gap-3 text-center">
+                        <div class="w-14 h-14 rounded-full bg-primary flex items-center justify-center text-on-primary ring-8 ring-white shadow-md">
+                            <span class="material-symbols-outlined text-2xl">radio_button_checked</span>
+                        </div>
+                        <span class="font-display text-xs font-extrabold text-primary uppercase tracking-widest">Original Source</span>
+                        <p class="text-[10px] text-outline max-w-[120px]">First publication node</p>
+                    </div>
+                    
+                    <!-- Node 2 -->
+                    <div class="flex flex-col items-center z-10 gap-3 text-center">
+                        <div class="w-12 h-12 rounded-full bg-white border-2 border-primary flex items-center justify-center text-primary ring-8 ring-white shadow-sm">
+                            <span class="material-symbols-outlined text-xl">article</span>
+                        </div>
+                        <span class="font-display text-xs font-semibold text-on-surface-variant uppercase tracking-widest">Reported By</span>
+                        <p class="text-[10px] text-outline max-w-[120px]">Initial syndications</p>
+                    </div>
+
+                    <!-- Node 3 -->
+                    <div class="flex flex-col items-center z-10 gap-3 text-center">
+                        <div class="w-12 h-12 rounded-full bg-white border-2 border-primary flex items-center justify-center text-primary ring-8 ring-white shadow-sm">
+                            <span class="material-symbols-outlined text-xl">content_copy</span>
+                        </div>
+                        <span class="font-display text-xs font-semibold text-on-surface-variant uppercase tracking-widest">Repeated By</span>
+                        <p class="text-[10px] text-outline max-w-[120px]">Widespread coverage</p>
+                    </div>
+
+                    <!-- Node 4 -->
+                    <div class="flex flex-col items-center z-10 gap-3 text-center">
+                        <div class="w-14 h-14 rounded-full bg-indigo-50 border border-secondary/30 flex items-center justify-center text-secondary ring-8 ring-white shadow-md">
+                            <span class="material-symbols-outlined text-2xl font-bold">verified</span>
+                        </div>
+                        <span class="font-display text-xs font-extrabold text-secondary uppercase tracking-widest">Cross-Verified</span>
+                        <p class="text-[10px] text-outline max-w-[120px]">Confirmed facts</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- The Problem -->
+        <section class="py-20 border-t border-outline-variant/30" id="methodology">
+            <div class="mb-12 max-w-2xl">
+                <h2 class="font-display text-2xl md:text-3xl font-bold text-primary mb-3">Not all coverage is independent.</h2>
+                <p class="text-sm md:text-base text-on-surface-variant leading-relaxed">
+                    Visualizing the difference between genuine broad consensus and simple duplication.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Left Column (Consensus) -->
+                <div class="bg-slate-50 border border-outline-variant/40 p-8 rounded-[24px] flex flex-col justify-between">
+                    <div>
+                        <h3 class="font-display text-lg font-bold text-primary mb-2">Perceived Widespread Coverage</h3>
+                        <p class="text-xs text-on-surface-variant mb-8 leading-relaxed">
+                            To the reader, seeing a story on multiple websites looks like broad independent validation.
+                        </p>
+                    </div>
+                    
+                    <div class="flex flex-col items-center py-6 px-4 bg-white border border-outline-variant/20 rounded-xl relative">
+                        <!-- Custom SVG Flow showing simple parallel linear lines -->
+                        <svg viewBox="0 0 200 120" class="w-full h-28">
+                            <circle cx="20" cy="20" r="6" fill="#787680" />
+                            <line x1="26" y1="20" x2="174" y2="20" stroke="#c8c5d0" stroke-width="1.5" />
+                            <circle cx="180" cy="20" r="6" fill="#787680" />
+
+                            <circle cx="20" cy="60" r="6" fill="#787680" />
+                            <line x1="26" y1="60" x2="174" y2="60" stroke="#c8c5d0" stroke-width="1.5" />
+                            <circle cx="180" cy="60" r="6" fill="#787680" />
+
+                            <circle cx="20" cy="100" r="6" fill="#787680" />
+                            <line x1="26" y1="100" x2="174" y2="100" stroke="#c8c5d0" stroke-width="1.5" />
+                            <circle cx="180" cy="100" r="6" fill="#787680" />
+                        </svg>
+                        <p class="text-[10px] text-outline italic text-center mt-4">Implicit narrative: Multiple sources investigated and published separately.</p>
+                    </div>
+                </div>
+                
+                <!-- Right Column (Actual Sourcing Branch) -->
+                <div class="bg-white border-2 border-primary p-8 rounded-[24px] shadow-sm flex flex-col justify-between relative overflow-hidden">
+                    <div class="absolute top-0 right-0 px-3 py-1 bg-primary text-on-primary text-[10px] font-extrabold uppercase tracking-widest rounded-bl-xl">Insight</div>
+                    
+                    <div>
+                        <h3 class="font-display text-lg font-bold text-primary mb-2">What Sourcing Patterns Actually Reveal</h3>
+                        <p class="text-xs text-on-surface-variant mb-8 leading-relaxed">
+                            Our tracker strips away layout differences to reveal if websites are just copy-pasting the same original reporter.
+                        </p>
+                    </div>
+                    
+                    <div class="flex flex-col items-center py-6 px-4 bg-slate-50 border border-outline-variant/20 rounded-xl">
+                        <!-- Custom SVG Flow showing a branched structure from one root -->
+                        <svg viewBox="0 0 200 120" class="w-full h-28 text-primary">
+                            <!-- Root node -->
+                            <circle cx="25" cy="60" r="10" class="fill-primary" />
+                            <text x="22" y="63" fill="white" class="text-[8px] font-bold">1</text>
+                            
+                            <!-- Branches -->
+                            <path d="M35 60 C 70 60, 80 20, 160 20" stroke="#1e1b4b" stroke-width="2" fill="none" />
+                            <path d="M35 60 C 70 60, 80 45, 160 45" stroke="#1e1b4b" stroke-width="2" fill="none" />
+                            <path d="M35 60 C 70 60, 80 75, 160 75" stroke="#1e1b4b" stroke-width="2" fill="none" />
+                            <path d="M35 60 C 70 60, 80 100, 160 100" stroke="#1e1b4b" stroke-width="2" fill="none" />
+                            
+                            <!-- Leaf Nodes -->
+                            <circle cx="165" cy="20" r="5" class="fill-secondary" />
+                            <circle cx="165" cy="45" r="5" class="fill-secondary" />
+                            <circle cx="165" cy="75" r="5" class="fill-secondary" />
+                            <circle cx="165" cy="100" r="5" class="fill-secondary" />
+                        </svg>
+                        <p class="text-[10px] text-primary font-bold text-center mt-4">Actual pattern: 1 single source driving all downstream repeating syndications.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Bento Grid -->
+        <section class="py-20">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="p-6 border border-outline-variant/40 rounded-2xl bg-white hover:bg-slate-50 transition-colors">
+                    <span class="material-symbols-outlined text-secondary mb-6 text-3xl">search</span>
+                    <h4 class="font-display font-bold text-base mb-2">Find the Origin</h4>
+                    <p class="text-xs text-on-surface-variant leading-relaxed">Locate the first identifiable report and timestamp in the news database ecosystem.</p>
+                </div>
+                <div class="p-6 border border-outline-variant/40 rounded-2xl bg-white hover:bg-slate-50 transition-colors">
+                    <span class="material-symbols-outlined text-secondary mb-6 text-3xl">alt_route</span>
+                    <h4 class="font-display font-bold text-base mb-2">Trace the Spread</h4>
+                    <p class="text-xs text-on-surface-variant leading-relaxed">Watch news travel, duplicate, and syndicate across portals, regions, and authors.</p>
+                </div>
+                <div class="p-6 border border-outline-variant/40 rounded-2xl bg-white hover:bg-slate-50 transition-colors">
+                    <span class="material-symbols-outlined text-secondary mb-6 text-3xl">policy</span>
+                    <h4 class="font-display font-bold text-base mb-2">Examine Evidence</h4>
+                    <p class="text-xs text-on-surface-variant leading-relaxed">Review the specific timestamped links and citations supporting every trust score.</p>
+                </div>
+                <div class="p-6 bg-primary text-on-primary rounded-2xl flex flex-col justify-between">
+                    <div>
+                        <span class="material-symbols-outlined mb-6 text-3xl text-primary-fixed">balance</span>
+                        <h4 class="font-display font-bold text-base mb-2 text-white">Make Your Own Judgment</h4>
+                    </div>
+                    <p class="text-xs text-slate-300 leading-relaxed uppercase tracking-wider font-semibold">SourceTrace does not tell you what to believe. We show you how it arrived.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- System Flow Timeline -->
+        <section class="py-20 border-t border-outline-variant/30">
+            <h2 class="font-display text-2xl md:text-3xl font-bold text-primary mb-16 text-center">Engineered for Precision</h2>
+            
+            <div class="relative max-w-xl mx-auto">
+                <!-- Timeline center line -->
+                <div class="absolute left-1/2 top-0 bottom-0 w-[1px] bg-outline-variant/40 -translate-x-1/2"></div>
+                
+                <!-- Flow Items -->
+                <div class="space-y-12">
+                    
+                    <!-- Item 1 -->
+                    <div class="relative flex flex-col items-center">
+                        <div class="w-4 h-4 bg-primary rounded-full z-10 mb-4 ring-8 ring-white"></div>
+                        <div class="bg-white p-5 border border-outline-variant/40 rounded-xl w-full max-w-sm text-center shadow-sm">
+                            <span class="text-xs font-bold uppercase tracking-widest text-secondary block mb-1">Step 1: User Query</span>
+                            <p class="text-xs text-on-surface-variant leading-relaxed">User inputs specific topics, keywords, or news headlines to index.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Item 2 -->
+                    <div class="relative flex flex-col items-center">
+                        <div class="w-4 h-4 bg-primary rounded-full z-10 mb-4 ring-8 ring-white"></div>
+                        <div class="bg-white p-5 border border-outline-variant/40 rounded-xl w-full max-w-sm text-center shadow-sm">
+                            <span class="text-xs font-bold uppercase tracking-widest text-secondary block mb-1">Step 2: Story Discovery</span>
+                            <p class="text-xs text-on-surface-variant leading-relaxed">System performs cross-portal crawling and scraper retrieval of related coverage.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Item 3 -->
+                    <div class="relative flex flex-col items-center">
+                        <div class="w-4 h-4 bg-primary rounded-full z-10 mb-4 ring-8 ring-white"></div>
+                        <div class="bg-white p-5 border border-outline-variant/40 rounded-xl w-full max-w-sm text-center shadow-sm">
+                            <span class="text-xs font-bold uppercase tracking-widest text-secondary block mb-1">Step 3: Source Identification</span>
+                            <p class="text-xs text-on-surface-variant leading-relaxed">Outlets are identified and matched against our verified registry databases.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Item 4 -->
+                    <div class="relative flex flex-col items-center">
+                        <div class="w-4 h-4 bg-primary rounded-full z-10 mb-4 ring-8 ring-white"></div>
+                        <div class="bg-white p-5 border border-outline-variant/40 rounded-xl w-full max-w-sm text-center shadow-sm">
+                            <span class="text-xs font-bold uppercase tracking-widest text-secondary block mb-1">Step 4: Sequence Analysis</span>
+                            <p class="text-xs text-on-surface-variant leading-relaxed">Timestamps are parsed and normalized to sequence publishing order exactly.</p>
+                        </div>
+                    </div>
+
+                    <!-- Item 5 -->
+                    <div class="relative flex flex-col items-center">
+                        <div class="w-4 h-4 bg-primary rounded-full z-10 mb-4 ring-8 ring-white"></div>
+                        <div class="bg-white p-5 border border-outline-variant/40 rounded-xl w-full max-w-sm text-center shadow-sm">
+                            <span class="text-xs font-bold uppercase tracking-widest text-secondary block mb-1">Step 5: Evidence Scoring</span>
+                            <p class="text-xs text-on-surface-variant leading-relaxed">Deduplication algorithm calculates cosine similarities to detect repetition.</p>
+                        </div>
+                    </div>
+
+                    <!-- Item 6 -->
+                    <div class="relative flex flex-col items-center">
+                        <div class="w-10 h-10 bg-indigo-50 border border-secondary/20 rounded-full z-10 mb-4 ring-8 ring-white flex items-center justify-center text-secondary shadow-md">
+                            <span class="material-symbols-outlined text-base">analytics</span>
+                        </div>
+                        <div class="bg-primary text-on-primary p-5 rounded-xl w-full max-w-sm text-center shadow-lg">
+                            <span class="text-xs font-bold uppercase tracking-widest text-primary-fixed block mb-1">Result: Forensic Audit</span>
+                            <p class="text-xs text-slate-300 leading-relaxed">A clear confidence score supported by structured citations and trust analysis.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Sourcing Score Card -->
+        <section class="py-16 bg-slate-50 border border-outline-variant/30 rounded-[24px] p-8 md:p-12 mb-20">
+            <div class="flex flex-col md:flex-row gap-10 items-center">
+                <div class="md:w-1/2">
+                    <h2 class="font-display text-2xl font-bold text-primary mb-4">A score is a signal, not a verdict.</h2>
+                    <p class="text-sm text-on-surface-variant leading-relaxed mb-6">
+                        Our algorithm processes quantitative patterns in journalism. It does not possess the editorial intuition of a human editor, but it provides the maps and source history analysts need to work faster and detect media bias.
+                    </p>
+                    <a href="index.html" class="bg-primary text-on-primary px-6 py-3 rounded-xl font-semibold text-sm hover:bg-neutral-800 transition-colors shadow-sm inline-block">Try Search Console</a>
+                </div>
+                <div class="md:w-1/2">
+                    <div class="bg-white border-2 border-amber-300 p-6 rounded-2xl relative shadow-sm">
+                        <div class="absolute -top-3.5 left-6 bg-amber-400 text-primary text-[10px] font-extrabold uppercase tracking-widest px-3 py-1 rounded">Disclaimer</div>
+                        <p class="font-display font-medium text-base italic text-primary leading-relaxed mt-2">
+                            "The Trace Score reflects sourcing patterns and information hygiene, not the truth or reliability of the claims themselves."
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SourceTrace Is Not -->
+        <section class="py-20 border-t border-outline-variant/30">
+            <div class="bg-white border border-outline-variant/40 rounded-[24px] p-8 md:p-12 shadow-sm">
+                <h2 class="font-display text-2xl font-bold text-primary mb-8 text-center">System Guardrails</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="flex items-start gap-3">
+                        <span class="material-symbols-outlined text-rose-600 shrink-0">close</span>
+                        <div>
+                            <h6 class="font-display text-sm font-bold text-primary mb-1">Not a truth engine</h6>
+                            <p class="text-xs text-on-surface-variant leading-relaxed">We map origin, not veracity. False claims can still be original.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <span class="material-symbols-outlined text-rose-600 shrink-0">close</span>
+                        <div>
+                            <h6 class="font-display text-sm font-bold text-primary mb-1">Not a journalism replacement</h6>
+                            <p class="text-xs text-on-surface-variant leading-relaxed">We provide the forensic tracking; editors provide context and editorial checks.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <span class="material-symbols-outlined text-rose-600 shrink-0">close</span>
+                        <div>
+                            <h6 class="font-display text-sm font-bold text-primary mb-1">Not a popularity index</h6>
+                            <p class="text-xs text-on-surface-variant leading-relaxed">Viral spread is often the opposite of quality reporting hygiene.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Final CTA -->
+        <section class="py-24 text-center max-w-xl mx-auto">
+            <h2 class="font-display text-3xl font-extrabold text-primary mb-6">Before you trust, trace.</h2>
+            <a href="index.html" class="bg-primary text-on-primary px-8 py-4 rounded-xl font-semibold text-sm hover:bg-neutral-800 transition-colors shadow-md inline-block">Start Your Tracing Search</a>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-outline-variant/30 mt-auto shadow-inner">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center py-12 px-6 md:px-12">
+            <div class="mb-6 md:mb-0">
+                <span class="font-display font-bold text-lg text-primary flex items-center">
+                    <span class="material-symbols-outlined mr-2 text-secondary">fingerprint</span>
+                    SourceTrace
+                </span>
+                <p class="text-xs text-outline font-semibold tracking-wider uppercase mt-2">© 2026 SourceTrace Information Integrity Lab.</p>
+            </div>
+            <div class="flex flex-wrap justify-center gap-6 text-sm text-on-surface-variant font-medium">
+                <a class="hover:text-primary transition-colors" href="index.html#methodology">Methodology</a>
+                <a class="hover:text-primary transition-colors" href="hot-topics.html">Hot Topics</a>
+                <a class="hover:text-primary transition-colors" href="about.html">About</a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

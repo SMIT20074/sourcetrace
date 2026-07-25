@@ -5,3 +5,7 @@ supabase
 pydantic
 scikit-learn
 groq
+feedparser
+beautifulsoup4
+requests
+lxml
