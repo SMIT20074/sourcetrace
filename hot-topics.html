@@ -90,54 +90,70 @@
             <nav class="flex items-center gap-2 mb-4 text-xs font-semibold text-outline tracking-wider uppercase">
                 <a href="index.html" class="hover:text-primary">Global</a>
                 <span>/</span>
-                <span class="hover:text-primary">South Asia</span>
+                <a href="index.html" class="hover:text-primary">Intelligence</a>
                 <span>/</span>
-                <span class="text-primary font-bold">India Protests</span>
+                <span class="text-primary font-bold">Hot Topics</span>
             </nav>
-            <h1 class="font-display text-3xl md:text-4xl font-extrabold text-primary mb-4 max-w-3xl">
-                Hot Topics: Civil Unrest & Institutional Friction
-            </h1>
-            <p class="text-base text-on-surface-variant max-w-2xl leading-relaxed">
-                Tracking the evolution of protest strategies in India (2024-2026): A forensic analysis of digital mobilization, professionalized activism, and regional legislative friction.
-            </p>
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h1 class="font-display text-3xl md:text-4xl font-extrabold text-primary mb-3 max-w-3xl">
+                        Hot Topics: Automated Provenance Intelligence
+                    </h1>
+                    <p class="text-base text-on-surface-variant max-w-2xl leading-relaxed">
+                        Real-time cluster detection of trending news events. Auto-detecting original sources, outlet coverage density, and provenance confidence scores.
+                    </p>
+                </div>
+                <!-- Status Badge -->
+                <div class="shrink-0 flex items-center gap-2 bg-emerald-50 border border-emerald-200 px-3.5 py-2 rounded-xl text-emerald-800 text-xs font-bold shadow-sm" id="api-status-badge">
+                    <span class="relative flex h-2 w-2">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                    </span>
+                    <span id="api-status-text">Connected to Railway API</span>
+                </div>
+            </div>
         </section>
 
         <!-- Layout Grid -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
             
-            <!-- Left Sidebar: Investigation Desk -->
+            <!-- Left Sidebar: Investigation Desk & Controls -->
             <aside class="lg:col-span-3 space-y-6">
                 <div class="bg-white p-6 rounded-2xl border border-outline-variant/40 shadow-sm">
-                    <div class="flex items-center gap-2 mb-6 text-primary">
-                        <span class="material-symbols-outlined">visibility_lock</span>
-                        <h3 class="font-display text-sm font-bold uppercase tracking-wider">Investigation Desk</h3>
+                    <div class="flex items-center justify-between mb-6 text-primary">
+                        <div class="flex items-center gap-2">
+                            <span class="material-symbols-outlined">tune</span>
+                            <h3 class="font-display text-sm font-bold uppercase tracking-wider">Stream Controls</h3>
+                        </div>
+                        <button id="btn-refresh" class="text-xs text-secondary hover:text-primary font-bold flex items-center gap-1 transition-colors" title="Reload Topics">
+                            <span class="material-symbols-outlined text-sm">refresh</span>
+                            Refresh
+                        </button>
                     </div>
                     
                     <div class="space-y-6">
-                        <!-- Category Filters -->
+                        <!-- Timeframe Selector -->
                         <div>
-                            <p class="text-xs font-bold uppercase tracking-widest text-outline mb-3">Categories</p>
-                            <div class="space-y-2.5" id="category-filters">
-                                <label class="flex items-center gap-3 cursor-pointer group">
-                                    <input checked value="agriculture" class="rounded border-outline-variant/60 text-secondary focus:ring-secondary" type="checkbox">
-                                    <span class="text-sm font-medium text-on-surface-variant group-hover:text-primary transition-colors">Agriculture</span>
-                                </label>
-                                <label class="flex items-center gap-3 cursor-pointer group">
-                                    <input checked value="healthcare" class="rounded border-outline-variant/60 text-secondary focus:ring-secondary" type="checkbox">
-                                    <span class="text-sm font-medium text-on-surface-variant group-hover:text-primary transition-colors">Healthcare</span>
-                                </label>
-                                <label class="flex items-center gap-3 cursor-pointer group">
-                                    <input checked value="gig-economy" class="rounded border-outline-variant/60 text-secondary focus:ring-secondary" type="checkbox">
-                                    <span class="text-sm font-medium text-on-surface-variant group-hover:text-primary transition-colors">Gig Economy</span>
-                                </label>
-                                <label class="flex items-center gap-3 cursor-pointer group">
-                                    <input checked value="environment" class="rounded border-outline-variant/60 text-secondary focus:ring-secondary" type="checkbox">
-                                    <span class="text-sm font-medium text-on-surface-variant group-hover:text-primary transition-colors">Environment</span>
-                                </label>
-                            </div>
+                            <label class="block text-xs font-bold uppercase tracking-widest text-outline mb-2">Lookback Window</label>
+                            <select id="timeframe-select" class="w-full bg-slate-50 border border-outline-variant/60 rounded-xl text-sm font-semibold text-primary px-3 py-2.5 focus:ring-2 focus:ring-secondary focus:border-secondary transition-all">
+                                <option value="24">Last 24 Hours</option>
+                                <option value="48">Last 48 Hours</option>
+                                <option value="72" selected>Last 72 Hours (Default)</option>
+                                <option value="168">Last 7 Days (168h)</option>
+                            </select>
+                        </div>
+
+                        <!-- Topics Limit -->
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-widest text-outline mb-2">Max Topics</label>
+                            <select id="limit-select" class="w-full bg-slate-50 border border-outline-variant/60 rounded-xl text-sm font-semibold text-primary px-3 py-2.5 focus:ring-2 focus:ring-secondary focus:border-secondary transition-all">
+                                <option value="5">Top 5 Topics</option>
+                                <option value="10" selected>Top 10 Topics (Default)</option>
+                                <option value="20">Top 20 Topics</option>
+                            </select>
                         </div>
                         
-                        <!-- Confidence slider -->
+                        <!-- Confidence Floor Slider -->
                         <div>
                             <div class="flex justify-between items-center mb-2">
                                 <p class="text-xs font-bold uppercase tracking-widest text-outline">Confidence Floor</p>
@@ -145,153 +161,73 @@
                             </div>
                             <input id="confidence-floor-slider" class="w-full h-1 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-secondary" type="range" min="0" max="100" value="0">
                             <div class="flex justify-between mt-2 text-[10px] font-bold text-outline uppercase tracking-wider">
-                                <span>Low</span>
-                                <span>High Trust</span>
+                                <span>All Topics</span>
+                                <span>High Trust Only</span>
                             </div>
                         </div>
-                        
-                        <button id="btn-new-analysis" class="w-full bg-primary text-on-primary py-3 rounded-xl font-semibold text-sm hover:bg-neutral-800 transition-colors flex items-center justify-center gap-2">
+
+                        <!-- Tier Checkbox Filters -->
+                        <div>
+                            <p class="text-xs font-bold uppercase tracking-widest text-outline mb-3">Confidence Tiers</p>
+                            <div class="space-y-2.5" id="tier-filters">
+                                <label class="flex items-center gap-3 cursor-pointer group">
+                                    <input checked value="High" class="rounded border-outline-variant/60 text-emerald-600 focus:ring-emerald-500" type="checkbox">
+                                    <span class="text-sm font-medium text-on-surface-variant group-hover:text-primary flex items-center gap-1.5">
+                                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span> High Confidence
+                                    </span>
+                                </label>
+                                <label class="flex items-center gap-3 cursor-pointer group">
+                                    <input checked value="Moderate" class="rounded border-outline-variant/60 text-amber-500 focus:ring-amber-500" type="checkbox">
+                                    <span class="text-sm font-medium text-on-surface-variant group-hover:text-primary flex items-center gap-1.5">
+                                        <span class="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block"></span> Moderate
+                                    </span>
+                                </label>
+                                <label class="flex items-center gap-3 cursor-pointer group">
+                                    <input checked value="Low" class="rounded border-outline-variant/60 text-orange-500 focus:ring-orange-500" type="checkbox">
+                                    <span class="text-sm font-medium text-on-surface-variant group-hover:text-primary flex items-center gap-1.5">
+                                        <span class="w-2.5 h-2.5 rounded-full bg-orange-500 inline-block"></span> Low
+                                    </span>
+                                </label>
+                                <label class="flex items-center gap-3 cursor-pointer group">
+                                    <input checked value="Unverified" class="rounded border-outline-variant/60 text-rose-600 focus:ring-rose-500" type="checkbox">
+                                    <span class="text-sm font-medium text-on-surface-variant group-hover:text-primary flex items-center gap-1.5">
+                                        <span class="w-2.5 h-2.5 rounded-full bg-rose-600 inline-block"></span> Unverified
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <button id="btn-new-analysis" class="w-full bg-primary text-on-primary py-3 rounded-xl font-semibold text-sm hover:bg-neutral-800 transition-colors flex items-center justify-center gap-2 shadow-sm">
                             <span class="material-symbols-outlined text-sm">add</span>
-                            New Analysis
+                            Request New Analysis
                         </button>
                     </div>
                 </div>
                 
                 <!-- Analyst Note -->
                 <div class="p-6 bg-gradient-to-br from-slate-50 to-white border border-outline-variant/40 rounded-2xl shadow-sm">
-                    <h4 class="text-xs font-bold uppercase tracking-wider text-outline mb-2">Analyst Note</h4>
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-outline mb-2 flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-secondary text-sm">lightbulb</span> Analyst Note
+                    </h4>
                     <p class="text-sm text-on-surface-variant italic leading-relaxed">
-                        "The shift to 'smart' decentralized resistance is making traditional containment strategies obsolete. Focus on regional capitals."
+                        "Topics with high outlet coverage and established early publication timestamps provide the strongest provenance signals."
                     </p>
                 </div>
             </aside>
 
             <!-- Center Column: Intelligence Stream -->
             <section class="lg:col-span-6 space-y-6">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="font-display text-lg font-bold text-primary">Intelligence Stream</h2>
-                    <span class="text-xs font-semibold text-outline">14 Updates Since 08:00 IST</span>
+                <div class="flex justify-between items-center mb-2">
+                    <h2 class="font-display text-lg font-bold text-primary flex items-center gap-2">
+                        <span class="material-symbols-outlined text-secondary">trending_up</span>
+                        Intelligence Stream
+                    </h2>
+                    <span id="update-counter" class="text-xs font-semibold text-outline">Fetching live data...</span>
                 </div>
                 
+                <!-- Main Container for Cards, Loading, or Empty States -->
                 <div class="space-y-6" id="stream-container">
-                    
-                    <!-- Card 1: Smart Mobilization -->
-                    <div class="provenance-card p-6" data-category="agriculture" data-confidence="92" id="card-delhi">
-                        <div class="flex justify-between items-start mb-4">
-                            <div class="flex items-center gap-1.5 bg-emerald-50 px-3 py-1 rounded-md text-emerald-700">
-                                <span class="material-symbols-outlined text-xs font-bold">verified</span>
-                                <span class="text-xs font-bold uppercase tracking-wider">Verified Content</span>
-                            </div>
-                            <span class="text-xs text-outline font-medium">2h ago</span>
-                        </div>
-                        <h3 class="font-display text-lg font-bold text-primary mb-3">Smart Mobilization: Tactical Shift</h3>
-                        <p class="text-sm text-on-surface-variant mb-6 leading-relaxed">
-                            Evolution from border blockades to decentralized 'smart' resistance via encrypted messaging. Evidence suggests regional targets over New Delhi.
-                        </p>
-                        
-                        <div class="space-y-2">
-                            <div class="flex justify-between items-end text-xs font-bold">
-                                <span class="text-outline uppercase tracking-wider">Confidence Score</span>
-                                <span class="text-emerald-600">92%</span>
-                            </div>
-                            <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                                <div class="bg-emerald-600 h-full rounded-full" style="width: 92%"></div>
-                            </div>
-                        </div>
-                        <div class="mt-6 pt-4 border-t border-outline-variant/30 flex justify-between items-center">
-                            <span class="text-xs text-outline font-semibold">Target: Delhi Transit Corridor</span>
-                            <a class="text-xs text-primary font-bold flex items-center gap-0.5 hover:underline" href="index.html?q=India+Protests">
-                                View Nodes <span class="material-symbols-outlined text-sm">arrow_forward</span>
-                            </a>
-                        </div>
-                    </div>
-
-                    <!-- Card 2: Healthcare Paralysis -->
-                    <div class="provenance-card p-6" data-category="healthcare" data-confidence="78" id="card-neet">
-                        <div class="flex justify-between items-start mb-4">
-                            <div class="flex items-center gap-1.5 bg-rose-50 px-3 py-1 rounded-md text-rose-700">
-                                <span class="material-symbols-outlined text-xs font-bold">warning</span>
-                                <span class="text-xs font-bold uppercase tracking-wider">Active Conflict</span>
-                            </div>
-                            <span class="text-xs text-outline font-medium">5h ago</span>
-                        </div>
-                        <h3 class="font-display text-lg font-bold text-primary mb-3">Healthcare Paralysis & NEET-PG</h3>
-                        <p class="text-sm text-on-surface-variant mb-6 leading-relaxed">
-                            Widespread disruption across medical infrastructure due to irregularities and demands for a Central Protection Act.
-                        </p>
-                        <div class="space-y-2">
-                            <div class="flex justify-between items-end text-xs font-bold">
-                                <span class="text-outline uppercase tracking-wider">Caution Index</span>
-                                <span class="text-rose-600">High Tension (78%)</span>
-                            </div>
-                            <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                                <div class="bg-rose-600 h-full rounded-full" style="width: 78%"></div>
-                            </div>
-                        </div>
-                        <div class="mt-6 pt-4 border-t border-outline-variant/30 flex justify-between items-center">
-                            <span class="text-xs text-outline font-semibold">Target: National Medical Portals</span>
-                            <span class="text-xs text-outline font-semibold">5 primary nodes active</span>
-                        </div>
-                    </div>
-
-                    <!-- Card 3: Gig Worker Social Security -->
-                    <div class="provenance-card p-6" data-category="gig-economy" data-confidence="85" id="card-bengaluru">
-                        <div class="flex justify-between items-start mb-4">
-                            <div class="flex items-center gap-1.5 bg-indigo-50 px-3 py-1 rounded-md text-indigo-700">
-                                <span class="material-symbols-outlined text-xs font-bold">gavel</span>
-                                <span class="text-xs font-bold uppercase tracking-wider">Legislative Event</span>
-                            </div>
-                            <span class="text-xs text-outline font-medium">1d ago</span>
-                        </div>
-                        <h3 class="font-display text-lg font-bold text-primary mb-3">Gig Worker Social Security Bill</h3>
-                        <p class="text-sm text-on-surface-variant mb-6 leading-relaxed">
-                            Bengaluru legislation marks a structural shift toward state-level social security bills for platform-based labor.
-                        </p>
-                        <div class="flex flex-wrap gap-2 mb-4">
-                            <span class="bg-slate-100 text-slate-700 px-2.5 py-1 rounded text-xs font-semibold">Karnataka State</span>
-                            <span class="bg-slate-100 text-slate-700 px-2.5 py-1 rounded text-xs font-semibold">Urban Labor Code</span>
-                        </div>
-                        <div class="space-y-2">
-                            <div class="flex justify-between items-end text-xs font-bold">
-                                <span class="text-outline uppercase tracking-wider">Confidence Score</span>
-                                <span class="text-indigo-600">85%</span>
-                            </div>
-                            <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                                <div class="bg-indigo-600 h-full rounded-full" style="width: 85%"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Card 4: Environmentalism -->
-                    <div class="provenance-card p-6 opacity-90" data-category="environment" data-confidence="42" id="card-hasdeo">
-                        <div class="flex justify-between items-start mb-4">
-                            <div class="flex items-center gap-1.5 bg-amber-50 px-3 py-1 rounded-md text-amber-700">
-                                <span class="material-symbols-outlined text-xs font-bold">info</span>
-                                <span class="text-xs font-bold uppercase tracking-wider">Developing Report</span>
-                            </div>
-                            <span class="text-xs text-outline font-medium">2d ago</span>
-                        </div>
-                        <h3 class="font-display text-lg font-bold text-primary mb-3">Hasdeo Arand Environmentalism</h3>
-                        <p class="text-sm text-on-surface-variant mb-6 leading-relaxed">
-                            Reports of intensified tribal rights resistance against mining expansion. Confidence score inhibited by limited local field reporting.
-                        </p>
-                        <div class="space-y-2">
-                            <div class="flex justify-between items-end text-xs font-bold">
-                                <span class="text-outline uppercase tracking-wider">Confidence Score</span>
-                                <span class="text-amber-600">42%</span>
-                            </div>
-                            <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                                <div class="bg-amber-500 h-full rounded-full" style="width: 42%"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- No Results Placeholder -->
-                    <div id="no-results" class="hidden text-center py-16 bg-white border border-outline-variant/40 rounded-2xl shadow-sm">
-                        <span class="material-symbols-outlined text-outline-variant text-4xl mb-2">filter_alt_off</span>
-                        <p class="text-sm text-outline font-medium">No updates match your active filters.</p>
-                    </div>
-
+                    <!-- Skeleton Loader rendered via JS initially -->
                 </div>
             </section>
 
@@ -299,92 +235,50 @@
             <aside class="lg:col-span-3 space-y-6">
                 <!-- Circular Trust Score Widget -->
                 <div class="bg-white p-6 rounded-2xl border border-outline-variant/40 shadow-sm">
-                    <h4 class="text-xs font-bold uppercase tracking-wider text-outline mb-6">Topic Trust Score</h4>
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-outline mb-6">Stream Aggregate Trust</h4>
                     <div class="flex items-center justify-center py-4">
                         <div class="relative w-32 h-32 flex items-center justify-center">
                             <svg class="w-full h-full -rotate-90">
                                 <circle cx="64" cy="64" fill="transparent" r="54" stroke="#f1f5f9" stroke-width="8"></circle>
-                                <circle cx="64" cy="64" fill="transparent" r="54" stroke="#4648d4" stroke-dasharray="339.3" stroke-dashoffset="72.9" stroke-linecap="round" stroke-width="8"></circle>
+                                <circle id="trust-circle-bar" cx="64" cy="64" fill="transparent" r="54" stroke="#4648d4" stroke-dasharray="339.3" stroke-dashoffset="60" stroke-linecap="round" stroke-width="8" class="transition-all duration-700"></circle>
                             </svg>
                             <div class="absolute inset-0 flex flex-col items-center justify-center">
-                                <span class="text-2xl font-display font-extrabold text-primary">78.5%</span>
-                                <span class="text-[10px] font-bold text-emerald-600 uppercase tracking-widest mt-1">Stable</span>
+                                <span id="trust-score-val" class="text-2xl font-display font-extrabold text-primary">--%</span>
+                                <span id="trust-score-label" class="text-[10px] font-bold text-emerald-600 uppercase tracking-widest mt-1">Verified</span>
                             </div>
                         </div>
                     </div>
-                    <p class="text-xs text-on-surface-variant text-center leading-relaxed">
-                        Aggregation of 427 verified data points across judicial and media networks.
+                    <p id="trust-score-desc" class="text-xs text-on-surface-variant text-center leading-relaxed">
+                        Calculating provenance confidence across active clusters...
                     </p>
                 </div>
 
-                <!-- Evidence Nodes List -->
+                <!-- Primary Outlets List -->
                 <div class="bg-white p-6 rounded-2xl border border-outline-variant/40 shadow-sm">
-                    <h4 class="text-xs font-bold uppercase tracking-wider text-outline mb-4">Primary Evidence Nodes</h4>
-                    <ul class="space-y-4">
-                        <li class="flex items-start gap-3">
-                            <span class="material-symbols-outlined text-secondary text-lg mt-0.5">gavel</span>
-                            <div>
-                                <p class="text-xs font-bold text-primary leading-tight">Supreme Court Rulings</p>
-                                <span class="text-[9px] text-outline font-bold uppercase tracking-wider">Judicial Oversight</span>
-                            </div>
-                        </li>
-                        <li class="flex items-start gap-3">
-                            <span class="material-symbols-outlined text-secondary text-lg mt-0.5">description</span>
-                            <div>
-                                <p class="text-xs font-bold text-primary leading-tight">Union Press Releases</p>
-                                <span class="text-[9px] text-outline font-bold uppercase tracking-wider">Official Framework</span>
-                            </div>
-                        </li>
-                        <li class="flex items-start gap-3">
-                            <span class="material-symbols-outlined text-secondary text-lg mt-0.5">fingerprint</span>
-                            <div>
-                                <p class="text-xs font-bold text-primary leading-tight">Digital Forensics</p>
-                                <span class="text-[9px] text-outline font-bold uppercase tracking-wider">Signal Intelligence</span>
-                            </div>
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-outline mb-4">Top Reporting Outlets</h4>
+                    <ul class="space-y-3.5" id="primary-outlets-list">
+                        <li class="flex items-center gap-3 text-xs font-medium text-outline">
+                            <span class="material-symbols-outlined text-secondary text-base">newspaper</span>
+                            Loading active media nodes...
                         </li>
                     </ul>
                 </div>
 
-                <!-- Strategic Context Map Placeholder (SVG-based Map) -->
+                <!-- Strategic Hotspots -->
                 <div class="rounded-2xl border border-outline-variant/40 bg-white overflow-hidden shadow-sm">
-                    <div class="p-4 border-b border-slate-100 bg-slate-50/50">
-                        <h4 class="text-xs font-bold uppercase tracking-wider text-outline">Strategic Context Hotspots</h4>
-                    </div>
-                    
-                    <div class="bg-slate-50 p-4 relative flex items-center justify-center">
-                        <!-- Beautiful Minimal SVG Map of India Focus -->
-                        <svg viewBox="0 0 200 240" class="w-48 h-56 text-slate-200">
-                            <!-- Monochromatic simplified shape of India boundary -->
-                            <path d="M90 20 L100 30 L110 30 L112 40 L105 50 L110 65 L125 70 L140 75 L150 90 L140 100 L125 105 L115 110 L108 118 L110 130 L115 140 L110 160 L100 190 L90 220 L80 200 L85 180 L80 160 L68 150 L64 140 L60 120 L50 110 L45 100 L30 90 L40 75 L60 70 L70 60 L80 40 Z" fill="#e2e8f0" stroke="#cbd5e1" stroke-width="1.5" />
-                            
-                            <!-- Hotspot Delhi (Agriculture / NEET-PG) -->
-                            <g class="cursor-pointer group/map" id="map-delhi" data-target="card-delhi">
-                                <circle cx="85" cy="70" r="10" class="fill-rose-500/20 animate-pulse"></circle>
-                                <circle cx="85" cy="70" r="4" class="fill-rose-600"></circle>
-                                <text x="92" y="73" class="text-[8px] font-bold fill-primary select-none opacity-60 group-hover/map:opacity-100">Delhi</text>
-                            </g>
-                            
-                            <!-- Hotspot Bengaluru (Gig Economy) -->
-                            <g class="cursor-pointer group/map" id="map-bengaluru" data-target="card-bengaluru">
-                                <circle cx="85" cy="170" r="10" class="fill-indigo-500/20 animate-pulse"></circle>
-                                <circle cx="85" cy="170" r="4" class="fill-indigo-600"></circle>
-                                <text x="92" y="173" class="text-[8px] font-bold fill-primary select-none opacity-60 group-hover/map:opacity-100">Bengaluru</text>
-                            </g>
-                            
-                            <!-- Hotspot Hasdeo (Environment) -->
-                            <g class="cursor-pointer group/map" id="map-hasdeo" data-target="card-hasdeo">
-                                <circle cx="108" cy="115" r="10" class="fill-amber-500/20 animate-pulse"></circle>
-                                <circle cx="108" cy="115" r="4" class="fill-amber-600"></circle>
-                                <text x="115" y="118" class="text-[8px] font-bold fill-primary select-none opacity-60 group-hover/map:opacity-100">Hasdeo</text>
-                            </g>
-                        </svg>
-                    </div>
-                    
-                    <div class="p-3 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
-                        <span class="text-[10px] font-bold text-outline uppercase">Live Visualizer v2.4</span>
-                        <span class="text-[9px] font-bold text-emerald-600 uppercase flex items-center gap-0.5">
-                            <span class="h-1.5 w-1.5 rounded-full bg-emerald-600 inline-block animate-ping"></span> Live feed
+                    <div class="p-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-outline">Provenance Visualizer</h4>
+                        <span class="text-[9px] font-bold text-emerald-600 uppercase flex items-center gap-1">
+                            <span class="h-1.5 w-1.5 rounded-full bg-emerald-600 inline-block animate-ping"></span> Active
                         </span>
+                    </div>
+                    
+                    <div class="bg-slate-50 p-6 flex flex-col items-center justify-center text-center">
+                        <span class="material-symbols-outlined text-4xl text-secondary mb-2">schema</span>
+                        <p class="text-xs font-bold text-primary mb-1">Clustering Algorithm v2.1</p>
+                        <p class="text-[11px] text-outline leading-relaxed max-w-[200px]">
+                            Auto-deduplicates story feeds by calculating cosine similarity across original reporting nodes.
+                        </p>
                     </div>
                 </div>
             </aside>
@@ -404,10 +298,9 @@
                 <p class="text-xs text-outline font-semibold tracking-wider uppercase mt-2">© 2026 SourceTrace Information Integrity Lab.</p>
             </div>
             <div class="flex flex-wrap justify-center gap-6 text-sm text-on-surface-variant font-medium">
-                <a class="hover:text-primary transition-colors" href="#">Methodology</a>
-                <a class="hover:text-primary transition-colors" href="#">Transparency Report</a>
-                <a class="hover:text-primary transition-colors" href="#">Institutional Partners</a>
-                <a class="hover:text-primary transition-colors" href="#">Privacy Policy</a>
+                <a class="hover:text-primary transition-colors" href="index.html">Methodology</a>
+                <a class="hover:text-primary transition-colors" href="how-we-score.html">How We Score</a>
+                <a class="hover:text-primary transition-colors" href="about.html">About</a>
             </div>
         </div>
     </footer>
@@ -429,7 +322,7 @@
             <form id="analysis-form" class="space-y-4">
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-wider text-outline mb-1">Target Topic</label>
-                    <input class="w-full rounded-lg border-outline-variant/60 focus:ring-secondary focus:border-secondary text-sm" placeholder="e.g. Maharashtra Port Strike" type="text" required/>
+                    <input class="w-full rounded-lg border-outline-variant/60 focus:ring-secondary focus:border-secondary text-sm" placeholder="e.g. NEET-UG Medical Exam Reform" type="text" required/>
                 </div>
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-wider text-outline mb-1">Source URL (Optional)</label>
@@ -442,85 +335,528 @@
         </div>
     </div>
 
-    <!-- Interactive script logic -->
+    <!-- Script Logic to Fetch Endpoint and Render Cards -->
     <script>
-        // Interactive Category and Confidence Floor Filtering
-        const categoryFilters = document.querySelectorAll('#category-filters input[type="checkbox"]');
+        // API Base URL provided by backend team
+        const PRIMARY_API_ENDPOINT = "https://sourcetrace-production-740a.up.railway.app/api/v1/hot-topics";
+        const FALLBACK_API_ENDPOINTS = [
+            "/api/v1/hot-topics",
+            "/hot-topics",
+            "http://localhost:8000/hot-topics"
+        ];
+
+        // Global State
+        let rawTopicsData = [];
+        let isFetching = false;
+
+        // DOM Elements
+        const streamContainer = document.getElementById('stream-container');
+        const timeframeSelect = document.getElementById('timeframe-select');
+        const limitSelect = document.getElementById('limit-select');
         const confidenceSlider = document.getElementById('confidence-floor-slider');
         const confidenceValLabel = document.getElementById('confidence-floor-val');
-        const cards = document.querySelectorAll('.provenance-card');
-        const noResults = document.getElementById('no-results');
+        const tierCheckboxes = document.querySelectorAll('#tier-filters input[type="checkbox"]');
+        const btnRefresh = document.getElementById('btn-refresh');
+        const apiStatusText = document.getElementById('api-status-text');
+        const apiStatusBadge = document.getElementById('api-status-badge');
+        const updateCounter = document.getElementById('update-counter');
+        const trustScoreVal = document.getElementById('trust-score-val');
+        const trustScoreLabel = document.getElementById('trust-score-label');
+        const trustScoreDesc = document.getElementById('trust-score-desc');
+        const trustCircleBar = document.getElementById('trust-circle-bar');
+        const primaryOutletsList = document.getElementById('primary-outlets-list');
 
-        function applyFilters() {
-            const activeCategories = Array.from(categoryFilters)
-                .filter(cb => cb.checked)
-                .map(cb => cb.value);
-            
-            const minConfidence = parseInt(confidenceSlider.value);
-            confidenceValLabel.innerText = `${minConfidence}%`;
-            
-            let visibleCount = 0;
+        // Fetch hot topics on initial page load
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchHotTopics();
+        });
 
-            cards.forEach(card => {
-                const category = card.getAttribute('data-category');
-                const confidence = parseInt(card.getAttribute('data-confidence'));
+        // Event listeners for controls
+        timeframeSelect.addEventListener('change', fetchHotTopics);
+        limitSelect.addEventListener('change', fetchHotTopics);
+        btnRefresh.addEventListener('click', fetchHotTopics);
+        confidenceSlider.addEventListener('input', () => {
+            confidenceValLabel.innerText = `${confidenceSlider.value}%`;
+            renderFilteredTopics();
+        });
+        tierCheckboxes.forEach(cb => cb.addEventListener('change', renderFilteredTopics));
 
-                const matchesCategory = activeCategories.includes(category);
-                const matchesConfidence = confidence >= minConfidence;
+        /**
+         * 1. Fetch Hot Topics from Endpoint with Fallbacks
+         */
+        async function fetchHotTopics() {
+            if (isFetching) return;
+            isFetching = true;
 
-                if (matchesCategory && matchesConfidence) {
-                    card.classList.remove('hidden');
-                    visibleCount++;
-                } else {
-                    card.classList.add('hidden');
+            const hours = timeframeSelect.value || 72;
+            const limit = limitSelect.value || 10;
+            const queryParams = `?hours=${hours}&limit=${limit}`;
+
+            renderSkeletonLoading();
+            updateCounter.innerText = "Querying Railway endpoint...";
+
+            let responseData = null;
+            let successEndpoint = null;
+
+            // Try primary endpoint first
+            try {
+                const res = await fetch(`${PRIMARY_API_ENDPOINT}${queryParams}`, {
+                    method: 'GET',
+                    headers: { 'Accept': 'application/json' }
+                });
+                if (res.ok) {
+                    responseData = await res.json();
+                    successEndpoint = PRIMARY_API_ENDPOINT;
                 }
-            });
+            } catch (err) {
+                console.warn("Primary endpoint failed, attempting fallbacks...", err);
+            }
 
-            if (visibleCount === 0) {
-                noResults.classList.remove('hidden');
+            // Fallback endpoints if primary fails
+            if (!responseData) {
+                for (const fallbackUrl of FALLBACK_API_ENDPOINTS) {
+                    try {
+                        const res = await fetch(`${fallbackUrl}${queryParams}`, {
+                            method: 'GET',
+                            headers: { 'Accept': 'application/json' }
+                        });
+                        if (res.ok) {
+                            responseData = await res.json();
+                            successEndpoint = fallbackUrl;
+                            break;
+                        }
+                    } catch (e) {
+                        // continue checking next fallback
+                    }
+                }
+            }
+
+            // If network request failed or was unreachable, use high-fidelity mock fallback data
+            if (!responseData || !responseData.topics) {
+                console.info("Using local fallback response data for preview.");
+                responseData = getMockHotTopicsData();
+                updateApiStatusBadge(false, "Offline Fallback Mode");
             } else {
-                noResults.classList.add('hidden');
+                updateApiStatusBadge(true, "Railway API Connected");
+            }
+
+            isFetching = false;
+            rawTopicsData = responseData.topics || [];
+            updateCounter.innerText = `${rawTopicsData.length} Topics Found (${hours}h window)`;
+
+            renderFilteredTopics();
+            updateSidebarAnalytics(rawTopicsData);
+        }
+
+        /**
+         * Update header API Status badge
+         */
+        function updateApiStatusBadge(isConnected, message) {
+            apiStatusText.innerText = message;
+            if (isConnected) {
+                apiStatusBadge.className = "shrink-0 flex items-center gap-2 bg-emerald-50 border border-emerald-200 px-3.5 py-2 rounded-xl text-emerald-800 text-xs font-bold shadow-sm";
+            } else {
+                apiStatusBadge.className = "shrink-0 flex items-center gap-2 bg-amber-50 border border-amber-200 px-3.5 py-2 rounded-xl text-amber-800 text-xs font-bold shadow-sm";
             }
         }
 
-        categoryFilters.forEach(cb => cb.addEventListener('change', applyFilters));
-        confidenceSlider.addEventListener('input', applyFilters);
+        /**
+         * Render Skeleton Loading Cards
+         */
+        function renderSkeletonLoading() {
+            streamContainer.innerHTML = Array(3).fill(0).map(() => `
+                <div class="provenance-card p-6 animate-pulse space-y-4">
+                    <div class="flex justify-between items-center">
+                        <div class="h-6 w-32 bg-slate-200 rounded-md"></div>
+                        <div class="h-6 w-24 bg-slate-200 rounded-md"></div>
+                    </div>
+                    <div class="h-6 w-3/4 bg-slate-200 rounded-md"></div>
+                    <div class="h-4 w-full bg-slate-200 rounded-md"></div>
+                    <div class="h-4 w-2/3 bg-slate-200 rounded-md"></div>
+                    <div class="h-3 w-full bg-slate-100 rounded-full mt-4"></div>
+                </div>
+            `).join('');
+        }
 
-        // Map hotspot interaction highlighting
-        const mapHotspots = document.querySelectorAll('[id^="map-"]');
-        mapHotspots.forEach(spot => {
-            const targetId = spot.getAttribute('data-target');
-            const targetCard = document.getElementById(targetId);
+        /**
+         * 2 & 3. Render Filtered Topic Cards & Handle Empty States
+         */
+        function renderFilteredTopics() {
+            const minConfidence = parseInt(confidenceSlider.value) || 0;
+            const activeTiers = Array.from(tierCheckboxes)
+                .filter(cb => cb.checked)
+                .map(cb => cb.value.toLowerCase());
 
-            spot.addEventListener('mouseenter', () => {
-                if (targetCard && !targetCard.classList.contains('hidden')) {
-                    targetCard.classList.add('ring-2', 'ring-secondary', 'border-secondary');
-                    targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
+            const filtered = rawTopicsData.filter(topic => {
+                const score = topic.confidence?.score || 0;
+                const tier = (topic.confidence?.tier || getCalculatedTier(score)).toLowerCase();
+                
+                const matchesConfidence = score >= minConfidence;
+                const matchesTier = activeTiers.includes(tier);
+
+                return matchesConfidence && matchesTier;
             });
 
-            spot.addEventListener('mouseleave', () => {
-                if (targetCard) {
-                    targetCard.classList.remove('ring-2', 'ring-secondary', 'border-secondary');
+            // Empty State Handling
+            if (filtered.length === 0) {
+                if (rawTopicsData.length === 0) {
+                    streamContainer.innerHTML = `
+                        <div class="text-center py-16 bg-white border border-outline-variant/40 rounded-2xl shadow-sm p-8">
+                            <span class="material-symbols-outlined text-outline-variant text-5xl mb-3">topic</span>
+                            <h3 class="font-display text-lg font-bold text-primary mb-2">No Trending Topics Found</h3>
+                            <p class="text-sm text-outline max-w-md mx-auto mb-6">
+                                No story clusters were returned by the backend for the selected lookback timeframe.
+                            </p>
+                            <button onclick="fetchHotTopics()" class="inline-flex items-center gap-2 bg-primary text-on-primary px-5 py-2.5 rounded-xl text-sm font-semibold hover:bg-neutral-800 transition-colors">
+                                <span class="material-symbols-outlined text-sm">refresh</span> Refresh Endpoint
+                            </button>
+                        </div>
+                    `;
+                } else {
+                    streamContainer.innerHTML = `
+                        <div class="text-center py-16 bg-white border border-outline-variant/40 rounded-2xl shadow-sm p-8">
+                            <span class="material-symbols-outlined text-outline-variant text-5xl mb-3">filter_alt_off</span>
+                            <h3 class="font-display text-lg font-bold text-primary mb-2">No Topics Match Active Filters</h3>
+                            <p class="text-sm text-outline max-w-md mx-auto mb-6">
+                                Try lowering the confidence floor slider or selecting additional tier checkboxes in the sidebar.
+                            </p>
+                            <button onclick="resetFilters()" class="inline-flex items-center gap-2 bg-secondary text-on-secondary px-5 py-2.5 rounded-xl text-sm font-semibold hover:bg-indigo-700 transition-colors">
+                                Reset Filters
+                            </button>
+                        </div>
+                    `;
                 }
+                return;
+            }
+
+            // Render Topic Cards
+            streamContainer.innerHTML = filtered.map(topic => renderSingleTopicCard(topic)).join('');
+        }
+
+        function resetFilters() {
+            confidenceSlider.value = 0;
+            confidenceValLabel.innerText = "0%";
+            tierCheckboxes.forEach(cb => cb.checked = true);
+            renderFilteredTopics();
+        }
+
+        /**
+         * Helper: Get Tier Configuration & Colors
+         * High -> Green, Moderate -> Yellow, Low -> Orange, Unverified -> Red
+         */
+        function getTierConfig(tier, score) {
+            const t = (tier || getCalculatedTier(score)).toLowerCase();
+
+            if (t === 'high') {
+                return {
+                    label: 'High Confidence',
+                    tierName: 'High',
+                    badgeStyle: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+                    barStyle: 'bg-emerald-600',
+                    textStyle: 'text-emerald-600',
+                    icon: 'verified'
+                };
+            } else if (t === 'moderate') {
+                return {
+                    label: 'Moderate',
+                    tierName: 'Moderate',
+                    badgeStyle: 'bg-amber-50 text-amber-700 border-amber-200',
+                    barStyle: 'bg-amber-500',
+                    textStyle: 'text-amber-600',
+                    icon: 'gavel'
+                };
+            } else if (t === 'low') {
+                return {
+                    label: 'Low',
+                    tierName: 'Low',
+                    badgeStyle: 'bg-orange-50 text-orange-700 border-orange-200',
+                    barStyle: 'bg-orange-500',
+                    textStyle: 'text-orange-600',
+                    icon: 'info'
+                };
+            } else {
+                return {
+                    label: 'Unverified',
+                    tierName: 'Unverified',
+                    badgeStyle: 'bg-rose-50 text-rose-700 border-rose-200',
+                    barStyle: 'bg-rose-600',
+                    textStyle: 'text-rose-600',
+                    icon: 'warning'
+                };
+            }
+        }
+
+        function getCalculatedTier(score) {
+            if (score >= 80) return 'High';
+            if (score >= 60) return 'Moderate';
+            if (score >= 40) return 'Low';
+            return 'Unverified';
+        }
+
+        /**
+         * Render Card HTML for a single topic
+         */
+        function renderSingleTopicCard(topic) {
+            const score = topic.confidence?.score ?? 0;
+            const tierConfig = getTierConfig(topic.confidence?.tier, score);
+            const orig = topic.original_source || {};
+            const origUrl = orig.url || '#';
+            const domain = getDomainName(origUrl);
+            const syndicatedCount = topic.syndicated_sources ? topic.syndicated_sources.length : 0;
+
+            return `
+                <div class="provenance-card p-6 transition-all duration-300 hover:shadow-md">
+                    
+                    <!-- Top Bar: Tier Badge + Outlet Count + Date -->
+                    <div class="flex flex-wrap justify-between items-center gap-2 mb-4">
+                        <div class="flex items-center gap-2">
+                            <!-- Tier badge with required colors -->
+                            <div class="flex items-center gap-1.5 ${tierConfig.badgeStyle} px-3 py-1 rounded-md border text-xs font-bold uppercase tracking-wider">
+                                <span class="material-symbols-outlined text-xs font-bold">${tierConfig.icon}</span>
+                                <span>${tierConfig.label}</span>
+                            </div>
+                            
+                            <!-- Outlet Count Badge -->
+                            <span class="inline-flex items-center gap-1 text-xs font-bold text-primary bg-slate-100 px-2.5 py-1 rounded-md border border-slate-200/60">
+                                <span class="material-symbols-outlined text-xs text-secondary">newspaper</span>
+                                ${topic.outlet_count} ${topic.outlet_count === 1 ? 'Outlet' : 'Outlets'}
+                            </span>
+                        </div>
+                        
+                        <span class="text-xs text-outline font-medium flex items-center gap-1">
+                            <span class="material-symbols-outlined text-xs">schedule</span>
+                            ${formatDate(orig.published_at)}
+                        </span>
+                    </div>
+
+                    <!-- Topic Headline -->
+                    <h3 class="font-display text-lg font-bold text-primary mb-3 leading-snug hover:text-secondary transition-colors">
+                        <a href="${origUrl}" target="_blank" rel="noopener noreferrer" class="hover:underline">
+                            ${escapeHtml(topic.topic_headline || orig.headline || 'Untitled News Topic')}
+                        </a>
+                    </h3>
+
+                    <!-- Snippet preview if available -->
+                    ${orig.snippet ? `
+                        <p class="text-sm text-on-surface-variant mb-5 leading-relaxed line-clamp-3">
+                            ${escapeHtml(orig.snippet)}
+                        </p>
+                    ` : ''}
+
+                    <!-- Confidence Progress Bar -->
+                    <div class="space-y-2 mb-5">
+                        <div class="flex justify-between items-end text-xs font-bold">
+                            <span class="text-outline uppercase tracking-wider">Provenance Confidence</span>
+                            <span class="${tierConfig.textStyle}">${score}% (${tierConfig.tierName})</span>
+                        </div>
+                        <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+                            <div class="${tierConfig.barStyle} h-full rounded-full transition-all duration-500" style="width: ${Math.min(100, Math.max(0, score))}%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Card Footer & Direct Link to Original Source -->
+                    <div class="pt-4 border-t border-outline-variant/30 flex flex-wrap justify-between items-center gap-3">
+                        <div class="flex items-center gap-2 text-xs">
+                            <span class="material-symbols-outlined text-sm text-secondary">domain</span>
+                            <span class="font-semibold text-on-surface-variant">Primary Outlet:</span>
+                            <span class="font-bold text-primary">${escapeHtml(domain)}</span>
+                        </div>
+                        
+                        <!-- Link to original_source.url -->
+                        <a href="${origUrl}" target="_blank" rel="noopener noreferrer" 
+                           class="text-xs text-secondary font-bold flex items-center gap-1 bg-slate-50 hover:bg-secondary hover:text-white px-3.5 py-2 rounded-xl border border-slate-200/80 transition-all shadow-xs">
+                            View Original Source <span class="material-symbols-outlined text-sm">open_in_new</span>
+                        </a>
+                    </div>
+
+                    <!-- Expandable Syndicated Sources -->
+                    ${syndicatedCount > 0 ? `
+                        <div class="mt-4 pt-3 border-t border-dashed border-slate-200">
+                            <details class="group">
+                                <summary class="text-xs font-bold text-outline uppercase tracking-wider cursor-pointer hover:text-primary flex items-center justify-between">
+                                    <span>${syndicatedCount} Syndicated / Overlapping Sources</span>
+                                    <span class="material-symbols-outlined text-sm group-open:rotate-180 transition-transform">expand_more</span>
+                                </summary>
+                                <div class="mt-3 space-y-2 pl-2">
+                                    ${topic.syndicated_sources.map(src => `
+                                        <div class="text-xs flex justify-between items-center py-1.5 border-b border-slate-100 last:border-0">
+                                            <a href="${src.url}" target="_blank" rel="noopener noreferrer" class="font-medium text-primary hover:text-secondary truncate max-w-[280px]">
+                                                ${escapeHtml(src.headline)}
+                                            </a>
+                                            <span class="text-[10px] text-outline shrink-0 ml-2 font-mono">${getDomainName(src.url)}</span>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </details>
+                        </div>
+                    ` : ''}
+
+                </div>
+            `;
+        }
+
+        /**
+         * Update Sidebar Trust Score & Top Outlets
+         */
+        function updateSidebarAnalytics(topics) {
+            if (!topics || topics.length === 0) {
+                trustScoreVal.innerText = "N/A";
+                trustScoreLabel.innerText = "No Data";
+                trustCircleBar.style.strokeDashoffset = 339.3;
+                primaryOutletsList.innerHTML = `<li class="text-xs text-outline font-medium">No active outlets detected.</li>`;
+                return;
+            }
+
+            const totalScore = topics.reduce((acc, t) => acc + (t.confidence?.score || 0), 0);
+            const avgScore = Math.round(totalScore / topics.length);
+            
+            trustScoreVal.innerText = `${avgScore}%`;
+            trustScoreLabel.innerText = avgScore >= 75 ? "High Trust" : (avgScore >= 50 ? "Moderate" : "Low Trust");
+            
+            // Adjust SVG stroke dash offset (circle radius 54 => perimeter ~ 339.3)
+            const offset = 339.3 - (339.3 * (avgScore / 100));
+            trustCircleBar.style.strokeDashoffset = offset;
+            trustScoreDesc.innerText = `Aggregated confidence across ${topics.length} active topic cluster(s).`;
+
+            // Extract unique primary outlets
+            const outletCounts = {};
+            topics.forEach(t => {
+                const domain = getDomainName(t.original_source?.url);
+                outletCounts[domain] = (outletCounts[domain] || 0) + 1;
             });
-        });
 
-        // New Analysis Modal logic
-        const btnNewAnalysis = document.getElementById('btn-new-analysis');
-        const modal = document.getElementById('analysis-modal');
-        const modalClose = document.getElementById('modal-close');
-        const analysisForm = document.getElementById('analysis-form');
+            const topOutlets = Object.entries(outletCounts)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 4);
 
-        btnNewAnalysis.addEventListener('click', () => modal.classList.remove('hidden'));
-        modalClose.addEventListener('click', () => modal.classList.add('hidden'));
-        
-        analysisForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            alert("Verification Node initialized successfully! SourceTrace has queued this topic for background RSS scraping.");
-            modal.classList.add('hidden');
-            analysisForm.reset();
-        });
+            primaryOutletsList.innerHTML = topOutlets.map(([domain, count]) => `
+                <li class="flex justify-between items-center text-xs">
+                    <span class="font-bold text-primary flex items-center gap-2">
+                        <span class="material-symbols-outlined text-secondary text-base">newspaper</span>
+                        ${escapeHtml(domain)}
+                    </span>
+                    <span class="bg-slate-100 text-slate-700 font-bold px-2 py-0.5 rounded text-[11px]">${count} topic${count > 1 ? 's' : ''}</span>
+                </li>
+            `).join('');
+        }
+
+        /**
+         * High-fidelity Fallback Data matching Backend JSON Schema
+         */
+        function getMockHotTopicsData() {
+            return {
+                "topics": [
+                    {
+                        "topic_headline": "Smart Mobilization: Tactical Shift in Regional Agricultural Demonstrations",
+                        "outlet_count": 8,
+                        "confidence": {
+                            "score": 92,
+                            "tier": "High",
+                            "breakdown": { "independent_confirmations": 35, "early_publication": 25, "established_outlet": 20, "neutral_language": 12 }
+                        },
+                        "original_source": {
+                            "headline": "Smart Mobilization: Tactical Shift in Regional Agricultural Demonstrations",
+                            "url": "https://www.reuters.com/world/india/smart-mobilization-agricultural-protests-2026",
+                            "snippet": "Evolution from border blockades to decentralized smart resistance via encrypted messaging corridors. Analysis reveals coordinated regional targets across state hubs.",
+                            "published_at": new Date(Date.now() - 7200000).toISOString()
+                        },
+                        "syndicated_sources": [
+                            { "headline": "Decentralized Agricultural Resistance Strategy Detailed", "url": "https://www.bbc.com/news/world-asia-67890", "published_at": new Date(Date.now() - 3600000).toISOString() },
+                            { "headline": "Farmers shift tactics to regional transit nodes", "url": "https://www.thehindu.com/news/national/farmers-shift-tactics", "published_at": new Date(Date.now() - 1800000).toISOString() }
+                        ]
+                    },
+                    {
+                        "topic_headline": "Gig Worker Social Security Bill Passed in Karnataka Assembly",
+                        "outlet_count": 5,
+                        "confidence": {
+                            "score": 75,
+                            "tier": "Moderate",
+                            "breakdown": { "independent_confirmations": 25, "early_publication": 20, "established_outlet": 20, "neutral_language": 10 }
+                        },
+                        "original_source": {
+                            "headline": "Gig Worker Social Security Bill Passed in Karnataka Assembly",
+                            "url": "https://www.business-standard.com/economy/news/gig-worker-bill-karnataka-2026",
+                            "snippet": "Bengaluru legislation marks a structural shift toward state-level social security funds and grievance mechanisms for platform-based delivery workers.",
+                            "published_at": new Date(Date.now() - 86400000).toISOString()
+                        },
+                        "syndicated_sources": [
+                            { "headline": "Karnataka enacts landmark social security act for gig economy", "url": "https://www.bloomberg.com/news/articles/karnataka-gig-bill", "published_at": new Date(Date.now() - 43200000).toISOString() }
+                        ]
+                    },
+                    {
+                        "topic_headline": "Healthcare Infrastructure Adjustments & NEET-PG Reforms",
+                        "outlet_count": 3,
+                        "confidence": {
+                            "score": 55,
+                            "tier": "Low",
+                            "breakdown": { "independent_confirmations": 15, "early_publication": 15, "established_outlet": 15, "neutral_language": 10 }
+                        },
+                        "original_source": {
+                            "headline": "Healthcare Infrastructure Adjustments & NEET-PG Reforms",
+                            "url": "https://www.ndtv.com/india-news/neet-pg-reforms-healthcare-infrastructure-update",
+                            "snippet": "Reports emerge of institutional friction and ongoing negotiations surrounding medical examination schedules and central protection demands.",
+                            "published_at": new Date(Date.now() - 172800000).toISOString()
+                        },
+                        "syndicated_sources": [
+                            { "headline": "Medical associations outline protection framework", "url": "https://www.indianexpress.com/article/india/medical-associations-framework", "published_at": new Date(Date.now() - 120000000).toISOString() }
+                        ]
+                    },
+                    {
+                        "topic_headline": "Unverified Allegations Regarding Regional Port Logistics Disruption",
+                        "outlet_count": 1,
+                        "confidence": {
+                            "score": 28,
+                            "tier": "Unverified",
+                            "breakdown": { "independent_confirmations": 0, "early_publication": 10, "established_outlet": 10, "neutral_language": 8 }
+                        },
+                        "original_source": {
+                            "headline": "Unverified Allegations Regarding Regional Port Logistics Disruption",
+                            "url": "https://www.unregisteredblog.net/posts/port-disruption-claim",
+                            "snippet": "Unconfirmed social media claims suggest potential transit slowdowns near western coastal logistics hubs.",
+                            "published_at": new Date(Date.now() - 250000000).toISOString()
+                        },
+                        "syndicated_sources": []
+                    }
+                ]
+            };
+        }
+
+        // Helper Utilities
+        function getDomainName(url) {
+            if (!url || url === '#') return "Source Outlet";
+            try {
+                const hostname = new URL(url).hostname;
+                return hostname.replace("www.", "");
+            } catch (e) {
+                return "Source Outlet";
+            }
+        }
+
+        function formatDate(isoStr) {
+            if (!isoStr) return "Recent";
+            try {
+                const date = new Date(isoStr);
+                return date.toLocaleString('en-US', { 
+                    month: 'short', 
+                    day: 'numeric', 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                });
+            } catch (e) {
+                return "Recent";
+            }
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
     </script>
 </body>
 </html>
+
