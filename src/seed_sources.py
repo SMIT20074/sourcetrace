@@ -26,6 +26,27 @@ INITIAL_SOURCES = [
         "founding_date": "1878-09-20",
         "ownership": "The Hindu Group (Kasturi & Sons Ltd.)",
         "correction_history": "Features an official Readers' Editor column and dedicated Corrections & Clarifications policy."
+    },
+{
+        "name": "Hindustan Times",
+        "feed_url": "https://www.hindustantimes.com/rss/topnews/rssfeed.xml",
+        "founding_date": "1924-09-26",
+        "ownership": "HT Media Ltd. (KK Birla family)",
+        "correction_history": "Maintains an editorial corrections policy for factual errors in print and digital reporting."
+    },
+    {
+        "name": "Indian Express",
+        "feed_url": "https://indianexpress.com/section/india/feed/",
+        "founding_date": "1932-01-01",
+        "ownership": "The Indian Express Group",
+        "correction_history": "Publishes corrections and clarifications through its editorial standards desk."
+    },
+    {
+        "name": "India Today",
+        "feed_url": "https://www.indiatoday.in/rss/1206584",
+        "founding_date": "1975-12-01",
+        "ownership": "Living Media India Ltd. (India Today Group)",
+        "correction_history": "Maintains a corrections policy for digital and broadcast reporting errors."
     }
 ]
 
