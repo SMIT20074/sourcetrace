@@ -47,24 +47,36 @@ def rank_by_originality(cluster_stories: list[dict]) -> dict:
 
 def cluster_stories(stories: list[dict], threshold: float = 0.75) -> list[list[dict]]:
     """
-    Groups a list of stories into clusters about the same real-world event,
-    using text similarity. Each story is compared to the first story in
-    each existing cluster; if similar enough, it joins that cluster,
-    otherwise it starts a new one.
+    Groups a list of stories into clusters about the same real-world event.
+    Builds one TF-IDF matrix for all stories up front and computes all
+    pairwise similarities in a single matrix operation, instead of
+    re-fitting a new model for every pair. Much faster on larger batches,
+    like the Hot Topics feed.
     """
+    if not stories:
+        return []
+
+    texts = [story["headline"] + " " + (story.get("snippet") or "") for story in stories]
+
+    if len(stories) == 1:
+        return [[stories[0]]]
+
+    vectorizer = TfidfVectorizer().fit(texts)
+    vectors = vectorizer.transform(texts)
+    similarity_matrix = cosine_similarity(vectors)
+
+    assigned = [False] * len(stories)
     clusters: list[list[dict]] = []
-    for story in stories:
-        placed = False
-        for cluster in clusters:
-            anchor = cluster[0]
-            score = compute_similarity(
-                anchor["headline"] + " " + (anchor.get("snippet") or ""),
-                story["headline"] + " " + (story.get("snippet") or "")
-            )
-            if score >= threshold:
-                cluster.append(story)
-                placed = True
-                break
-        if not placed:
-            clusters.append([story])
+
+    for i in range(len(stories)):
+        if assigned[i]:
+            continue
+        cluster = [stories[i]]
+        assigned[i] = True
+        for j in range(i + 1, len(stories)):
+            if not assigned[j] and similarity_matrix[i][j] >= threshold:
+                cluster.append(stories[j])
+                assigned[j] = True
+        clusters.append(cluster)
+
     return clusters
