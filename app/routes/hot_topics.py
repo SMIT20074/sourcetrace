@@ -11,30 +11,41 @@ router = APIRouter()
 def get_hot_topics(hours: int = 72, limit: int = 10):
     """
     Automatically detects trending topics by clustering recent stories
-    and ranking clusters by how many different outlets covered them.
-    No search term needed.
+    and ranking clusters by coverage density (number of reporting outlets)
+    and publication recency.
     """
     cutoff = (datetime.now(timezone.utc) - timedelta(hours=hours)).isoformat()
 
     try:
-        response = supabase.table("stories").select("*").gte("published_at", cutoff).limit(300).execute()
+        response = (
+            supabase.table("stories")
+            .select("*")
+            .gte("published_at", cutoff)
+            .limit(300)
+            .execute()
+        )
     except Exception:
-        raise HTTPException(status_code=503, detail="Could not reach the database. Please try again shortly.")
+        raise HTTPException(
+            status_code=503,
+            detail="Could not reach the database. Please try again shortly.",
+        )
 
     stories = response.data
     if not stories:
         return {"topics": []}
 
-    clusters = cluster_stories(stories)
-    multi_source_clusters = [c for c in clusters if len(c) > 1]
-    multi_source_clusters.sort(key=len, reverse=True)
+    # Cluster using a realistic text similarity threshold for multi-outlet coverage
+    clusters = cluster_stories(stories, threshold=0.30)
+
+    # Sort clusters primarily by size (number of outlets) and secondarily by recency
+    clusters.sort(key=lambda c: (len(c), c[0].get("published_at", "")), reverse=True)
 
     topics = []
-    for cluster in multi_source_clusters[:limit]:
+    for cluster in clusters[:limit]:
         ranked = rank_by_originality(cluster)
         confidence = calculate_confidence(cluster, ranked["original_source"])
         topics.append({
-            "topic_headline": ranked["original_source"]["headline"],
+            "topic_headline": ranked["original_source"].get("headline", ""),
             "outlet_count": len(cluster),
             "confidence": confidence,
             "original_source": ranked["original_source"],
@@ -42,3 +53,4 @@ def get_hot_topics(hours: int = 72, limit: int = 10):
         })
 
     return {"topics": topics}
+
