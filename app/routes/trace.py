@@ -58,9 +58,9 @@ def trace_topic(topic: str):
             real_cluster.append(story)
 
     ranked = rank_by_originality(real_cluster)
-    confidence = calculate_confidence(real_cluster, ranked["original_source"])
+    confidence = calculate_confidence(real_cluster, ranked["first_observed_source"])
 
-    published_at_str = ranked["original_source"].get("published_at")
+    published_at_str = ranked["first_observed_source"].get("published_at")
     is_stale = False
     hours_since_published = None
     if published_at_str:
@@ -75,9 +75,9 @@ def trace_topic(topic: str):
         "note": "This confidence score may be outdated and hasn't been re-verified recently." if is_stale else "Recently verified."
     }
 
-    url_check = supabase.table("stories").select("*").eq("url", ranked["original_source"]["url"]).execute()
+    url_check = supabase.table("stories").select("*").eq("url", ranked["first_observed_source"]["url"]).execute()
     has_correction = len(url_check.data) > 1 and any(
-        s["headline"] != ranked["original_source"]["headline"] for s in url_check.data
+        s["headline"] != ranked["first_observed_source"]["headline"] for s in url_check.data
     )
 
     all_sources = supabase.table("sources").select("id, name").execute()
@@ -85,7 +85,7 @@ def trace_topic(topic: str):
     silent_sources = [s["name"] for s in all_sources.data if s["id"] not in covering_source_ids]
 
     result = {
-        "original_source": ranked["original_source"],
+        "first_observed_source": ranked["first_observed_source"],
         "syndicated_sources": ranked["syndicated_sources"],
         "confidence": confidence,
         "correction_detected": has_correction,

@@ -51,12 +51,12 @@ def get_hot_topics(hours: int = 72, limit: int = 10):
     topics = []
     for cluster in clusters[:limit]:
         ranked = rank_by_originality(cluster)
-        confidence = calculate_confidence(cluster, ranked["original_source"])
+        confidence = calculate_confidence(cluster, ranked["first_observed_source"])
         topics.append({
-            "topic_headline": ranked["original_source"].get("headline", ""),
+            "topic_headline": ranked["first_observed_source"].get("headline", ""),
             "outlet_count": len(cluster),
             "confidence": confidence,
-            "original_source": ranked["original_source"],
+            "first_observed_source": ranked["first_observed_source"],
             "syndicated_sources": ranked["syndicated_sources"],
         })
 

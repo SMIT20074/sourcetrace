@@ -105,7 +105,7 @@ def search_topics(topic: str, hours: int = 168):
             continue
 
         ranked = rank_by_originality(cluster)
-        first_observed = ranked["original_source"]
+        first_observed = ranked["first_observed_source"]
         corroborating = ranked["syndicated_sources"]
         confidence = calculate_confidence(cluster, first_observed)
 
@@ -118,8 +118,8 @@ def search_topics(topic: str, hours: int = 168):
             pub_name = article.get("publisher") or art_domain
 
             if article is first_observed:
-                rel = "original_source"
-                rel_label = "Original Source"
+                rel = "first_observed_source"
+                rel_label = "First Observed in SourceTrace"
             elif art_domain and art_domain == first_domain:
                 rel = "syndicated_copy"
                 rel_label = "Syndicated Copy"

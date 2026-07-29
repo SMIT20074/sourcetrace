@@ -25,14 +25,14 @@ def get_claim_type(headline: str, snippet: str = "") -> str:
         return "Fact"
 
 
-def calculate_confidence(cluster_stories: list[dict], original_source: dict) -> dict:
+def calculate_confidence(cluster_stories: list[dict], first_observed_source: dict) -> dict:
     independent_count = max(0, len(cluster_stories) - 1)
 
     # 4 Reframed Component Scores matching Build Plan:
-    source_track_record = 20 if (original_source.get("source_id") or original_source.get("publisher")) else 10
+    source_track_record = 20 if (first_observed_source.get("source_id") or first_observed_source.get("publisher")) else 10
     cross_verification = min(independent_count * 10, 40)
     framing_difference = 10
-    originality = 15 if original_source.get("published_at") else 0
+    originality = 15 if first_observed_source.get("published_at") else 0
 
     breakdown = {
         "source_track_record": source_track_record,
@@ -43,8 +43,8 @@ def calculate_confidence(cluster_stories: list[dict], original_source: dict) -> 
 
     total_score = sum(breakdown.values())
     claim_type = get_claim_type(
-        original_source.get("headline", ""),
-        original_source.get("snippet", "")
+        first_observed_source.get("headline", ""),
+        first_observed_source.get("snippet", "")
     )
 
     return {
