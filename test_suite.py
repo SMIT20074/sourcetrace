@@ -9,7 +9,6 @@ Test suite covering Step 8 requirements:
 - No fabricated sources/URLs under any tested condition
 """
 import re
-from unittest.mock import patch, MagicMock
 from app.services.dedup import compute_similarity, cluster_stories, rank_by_originality
 from app.services.scoring import calculate_confidence
 
@@ -50,7 +49,6 @@ def test_confidence_does_not_overcount_same_outlet():
     same_outlet_dupes = [make_story(str(i), "Big event happens again", source_id="src-A") for i in range(2, 5)]
     cluster = [first] + same_outlet_dupes
     confidence = calculate_confidence(cluster, first)
-    # 3 extra articles, but all from the SAME outlet -> should count as 0 independent confirmations
     assert confidence["breakdown"]["cross_verification"] == 0
 
 
@@ -59,7 +57,6 @@ def test_confidence_counts_distinct_outlets_correctly():
     distinct_outlets = [make_story(str(i), "Big event happens too", source_id=f"src-{i}") for i in range(2, 5)]
     cluster = [first] + distinct_outlets
     confidence = calculate_confidence(cluster, first)
-    # 3 distinct additional outlets -> 30 points (10 each, per scoring.py logic)
     assert confidence["breakdown"]["cross_verification"] == 30
 
 
@@ -113,7 +110,6 @@ def test_no_fabricated_sources_in_citations_list():
 # ---- No-match / low-evidence honest empty state ----
 
 def test_empty_cluster_list_returns_no_topics_not_crash():
-    # Simulates hot_topics.py's behavior: empty stories -> honest diagnostics, no crash
     stories = []
     if not stories:
         result = {"topics": [], "diagnostics": {"stories_in_window": 0}}
