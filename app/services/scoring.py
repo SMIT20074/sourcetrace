@@ -26,8 +26,11 @@ def get_claim_type(headline: str, snippet: str = "") -> str:
 
 
 def calculate_confidence(cluster_stories: list[dict], first_observed_source: dict) -> dict:
-    independent_count = max(0, len(cluster_stories) - 1)
-
+    distinct_publisher_ids = {
+        s.get("source_id") for s in cluster_stories
+        if s.get("source_id") and s.get("source_id") != first_observed_source.get("source_id")
+    }
+    independent_count = len(distinct_publisher_ids)
     # 4 Reframed Component Scores matching Build Plan:
     source_track_record = 20 if (first_observed_source.get("source_id") or first_observed_source.get("publisher")) else 10
     cross_verification = min(independent_count * 10, 40)

@@ -75,10 +75,24 @@ def trace_topic(topic: str):
         "note": "This confidence score may be outdated and hasn't been re-verified recently." if is_stale else "Recently verified."
     }
 
-    url_check = supabase.table("stories").select("*").eq("url", ranked["first_observed_source"]["url"]).execute()
-    has_correction = len(url_check.data) > 1 and any(
-        s["headline"] != ranked["first_observed_source"]["headline"] for s in url_check.data
-    )
+    CORRECTION_SIMILARITY_THRESHOLD = 0.85
+    first_source = ranked["first_observed_source"]
+    has_correction = False
+    for story in real_cluster:
+        if story is first_source:
+            continue
+        if story.get("source_id") != first_source.get("source_id"):
+            continue
+        if story.get("url") == first_source.get("url"):
+            continue
+        if story.get("headline") == first_source.get("headline"):
+            continue
+        sim = compute_similarity(
+            first_source["headline"] + " " + (first_source.get("snippet") or ""),
+            story["headline"] + " " + (story.get("snippet") or "")
+        )
+        if sim >= CORRECTION_SIMILARITY_THRESHOLD:
+            has_correction = True
 
     all_sources = supabase.table("sources").select("id, name").execute()
     covering_source_ids = {s["source_id"] for s in real_cluster if s.get("source_id")}
