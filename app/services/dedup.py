@@ -40,7 +40,7 @@ def rank_by_originality(cluster_stories: list[dict]) -> dict:
     original = sorted_stories[0]
     copies = sorted_stories[1:]
     return {
-        "original_source": original,
+        "first_observed_source": original,
         "syndicated_sources": copies
     }
 

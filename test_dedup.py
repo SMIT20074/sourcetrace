@@ -14,9 +14,9 @@ print("Similarity between story 1 and 2:", score)
 
 # Test originality ranking
 ranked = rank_by_originality(fake_stories)
-print("\nOriginal source:", ranked["original_source"]["headline"])
+print("\nOriginal source:", ranked["first_observed_source"]["headline"])
 print("Syndicated sources:", [s["headline"] for s in ranked["syndicated_sources"]])
 
 # Test confidence scoring
-confidence = calculate_confidence(fake_stories, ranked["original_source"])
+confidence = calculate_confidence(fake_stories, ranked["first_observed_source"])
 print("\nConfidence result:", confidence)

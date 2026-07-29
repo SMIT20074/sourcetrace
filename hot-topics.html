@@ -101,7 +101,7 @@
                         Hot Topics: Automated Provenance Intelligence
                     </h1>
                     <p class="text-base text-on-surface-variant max-w-2xl leading-relaxed">
-                        Real-time cluster detection of trending news events. Auto-detecting original sources, outlet coverage density, and provenance confidence scores.
+                        Real-time cluster detection of trending news events. Auto-detecting first-observed sources, outlet coverage density, and provenance confidence scores.
                     </p>
                 </div>
                 <!-- Status Badge -->
@@ -343,7 +343,7 @@
         const PRIMARY_API_ENDPOINT = `${API_BASE}/hot-topics`;
         const FALLBACK_API_ENDPOINTS = [
             "/api/v1/hot-topics",
-            "/hot-topics"
+            "/hot-topics",
         ];
 
         // Global State
@@ -432,11 +432,11 @@
                 }
             }
 
-            // If network request failed or was unreachable, use high-fidelity mock fallback data
+            // If network request failed or was unreachable, show an honest empty/error state
             if (!responseData || !responseData.topics) {
-                console.info("Using local fallback response data for preview.");
-                responseData = getMockHotTopicsData();
-                updateApiStatusBadge(false, "Offline Fallback Mode");
+                console.warn("SourceTrace API unreachable.");
+                responseData = { topics: [] };
+                updateApiStatusBadge(false, "API Unreachable");
             } else {
                 updateApiStatusBadge(true, "Railway API Connected");
             }
@@ -600,7 +600,7 @@
         function renderSingleTopicCard(topic) {
             const score = topic.confidence?.score ?? 0;
             const tierConfig = getTierConfig(topic.confidence?.tier, score);
-            const orig = topic.original_source || {};
+            const orig = topic.first_observed_source || {};
             const origUrl = orig.url || '#';
             const domain = getDomainName(origUrl);
             const syndicatedCount = topic.syndicated_sources ? topic.syndicated_sources.length : 0;
@@ -660,7 +660,7 @@
                         </div>
                     </div>
 
-                    <!-- Card Footer & Direct Link to Original Source -->
+                    <!-- Card Footer & Direct Link to First Observed Source -->
                     <div class="pt-4 border-t border-outline-variant/30 flex flex-wrap justify-between items-center gap-3">
                         <div class="flex items-center gap-2 text-xs">
                             <span class="material-symbols-outlined text-sm text-secondary">domain</span>
@@ -668,10 +668,10 @@
                             <span class="font-bold text-primary">${escapeHtml(domain)}</span>
                         </div>
                         
-                        <!-- Link to original_source.url -->
+                        <!-- Link to first_observed_source.url -->
                         <a href="${origUrl}" target="_blank" rel="noopener noreferrer" 
                            class="text-xs text-secondary font-bold flex items-center gap-1 bg-slate-50 hover:bg-secondary hover:text-white px-3.5 py-2 rounded-xl border border-slate-200/80 transition-all shadow-xs">
-                            View Original Source <span class="material-symbols-outlined text-sm">open_in_new</span>
+                            View First Observed Source <span class="material-symbols-outlined text-sm">open_in_new</span>
                         </a>
                     </div>
 
@@ -727,7 +727,7 @@
             // Extract unique primary outlets
             const outletCounts = {};
             topics.forEach(t => {
-                const domain = getDomainName(t.original_source?.url);
+                const domain = getDomainName(t.first_observed_source?.url);
                 outletCounts[domain] = (outletCounts[domain] || 0) + 1;
             });
 
@@ -749,84 +749,6 @@
         /**
          * High-fidelity Fallback Data matching Backend JSON Schema
          */
-        function getMockHotTopicsData() {
-            return {
-                "topics": [
-                    {
-                        "topic_headline": "Smart Mobilization: Tactical Shift in Regional Agricultural Demonstrations",
-                        "outlet_count": 8,
-                        "confidence": {
-                            "score": 92,
-                            "tier": "High",
-                            "breakdown": { "independent_confirmations": 35, "early_publication": 25, "established_outlet": 20, "neutral_language": 12 }
-                        },
-                        "original_source": {
-                            "headline": "Smart Mobilization: Tactical Shift in Regional Agricultural Demonstrations",
-                            "url": "https://www.reuters.com/world/india/smart-mobilization-agricultural-protests-2026",
-                            "snippet": "Evolution from border blockades to decentralized smart resistance via encrypted messaging corridors. Analysis reveals coordinated regional targets across state hubs.",
-                            "published_at": new Date(Date.now() - 7200000).toISOString()
-                        },
-                        "syndicated_sources": [
-                            { "headline": "Decentralized Agricultural Resistance Strategy Detailed", "url": "https://www.bbc.com/news/world-asia-67890", "published_at": new Date(Date.now() - 3600000).toISOString() },
-                            { "headline": "Farmers shift tactics to regional transit nodes", "url": "https://www.thehindu.com/news/national/farmers-shift-tactics", "published_at": new Date(Date.now() - 1800000).toISOString() }
-                        ]
-                    },
-                    {
-                        "topic_headline": "Gig Worker Social Security Bill Passed in Karnataka Assembly",
-                        "outlet_count": 5,
-                        "confidence": {
-                            "score": 75,
-                            "tier": "Moderate",
-                            "breakdown": { "independent_confirmations": 25, "early_publication": 20, "established_outlet": 20, "neutral_language": 10 }
-                        },
-                        "original_source": {
-                            "headline": "Gig Worker Social Security Bill Passed in Karnataka Assembly",
-                            "url": "https://www.business-standard.com/economy/news/gig-worker-bill-karnataka-2026",
-                            "snippet": "Bengaluru legislation marks a structural shift toward state-level social security funds and grievance mechanisms for platform-based delivery workers.",
-                            "published_at": new Date(Date.now() - 86400000).toISOString()
-                        },
-                        "syndicated_sources": [
-                            { "headline": "Karnataka enacts landmark social security act for gig economy", "url": "https://www.bloomberg.com/news/articles/karnataka-gig-bill", "published_at": new Date(Date.now() - 43200000).toISOString() }
-                        ]
-                    },
-                    {
-                        "topic_headline": "Healthcare Infrastructure Adjustments & NEET-PG Reforms",
-                        "outlet_count": 3,
-                        "confidence": {
-                            "score": 55,
-                            "tier": "Low",
-                            "breakdown": { "independent_confirmations": 15, "early_publication": 15, "established_outlet": 15, "neutral_language": 10 }
-                        },
-                        "original_source": {
-                            "headline": "Healthcare Infrastructure Adjustments & NEET-PG Reforms",
-                            "url": "https://www.ndtv.com/india-news/neet-pg-reforms-healthcare-infrastructure-update",
-                            "snippet": "Reports emerge of institutional friction and ongoing negotiations surrounding medical examination schedules and central protection demands.",
-                            "published_at": new Date(Date.now() - 172800000).toISOString()
-                        },
-                        "syndicated_sources": [
-                            { "headline": "Medical associations outline protection framework", "url": "https://www.indianexpress.com/article/india/medical-associations-framework", "published_at": new Date(Date.now() - 120000000).toISOString() }
-                        ]
-                    },
-                    {
-                        "topic_headline": "Unverified Allegations Regarding Regional Port Logistics Disruption",
-                        "outlet_count": 1,
-                        "confidence": {
-                            "score": 28,
-                            "tier": "Unverified",
-                            "breakdown": { "independent_confirmations": 0, "early_publication": 10, "established_outlet": 10, "neutral_language": 8 }
-                        },
-                        "original_source": {
-                            "headline": "Unverified Allegations Regarding Regional Port Logistics Disruption",
-                            "url": "https://www.unregisteredblog.net/posts/port-disruption-claim",
-                            "snippet": "Unconfirmed social media claims suggest potential transit slowdowns near western coastal logistics hubs.",
-                            "published_at": new Date(Date.now() - 250000000).toISOString()
-                        },
-                        "syndicated_sources": []
-                    }
-                ]
-            };
-        }
-
         // Helper Utilities
         function getDomainName(url) {
             if (!url || url === '#') return "Source Outlet";

@@ -21,6 +21,7 @@ def get_hot_topics(hours: int = 72, limit: int = 10):
             supabase.table("stories")
             .select("*")
             .gte("published_at", cutoff)
+            .order("published_at", desc=True)
             .limit(300)
             .execute()
         )
@@ -32,7 +33,14 @@ def get_hot_topics(hours: int = 72, limit: int = 10):
 
     stories = response.data
     if not stories:
-        return {"topics": []}
+        return {
+            "topics": [],
+            "diagnostics": {
+                "stories_in_window": 0,
+                "candidate_clusters": 0,
+                "reason": f"No stories were found in the last {hours} hours."
+            }
+        }
 
     # Cluster using a realistic text similarity threshold for multi-outlet coverage
     clusters = cluster_stories(stories, threshold=0.30)
@@ -43,14 +51,24 @@ def get_hot_topics(hours: int = 72, limit: int = 10):
     topics = []
     for cluster in clusters[:limit]:
         ranked = rank_by_originality(cluster)
-        confidence = calculate_confidence(cluster, ranked["original_source"])
+        confidence = calculate_confidence(cluster, ranked["first_observed_source"])
         topics.append({
-            "topic_headline": ranked["original_source"].get("headline", ""),
+            "topic_headline": ranked["first_observed_source"].get("headline", ""),
             "outlet_count": len(cluster),
             "confidence": confidence,
-            "original_source": ranked["original_source"],
+            "first_observed_source": ranked["first_observed_source"],
             "syndicated_sources": ranked["syndicated_sources"],
         })
+
+    if not topics:
+        return {
+            "topics": [],
+            "diagnostics": {
+                "stories_in_window": len(stories),
+                "candidate_clusters": len(clusters),
+                "reason": "Stories were found, but none formed a cluster in this window."
+            }
+        }
 
     return {"topics": topics}
 

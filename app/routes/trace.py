@@ -23,7 +23,7 @@ def trace_topic(topic: str):
         return cached
 
     try:
-        response = supabase.table("stories").select("*").limit(300).execute()
+        response = supabase.table("stories").select("*").order("published_at", desc=True).limit(300).execute()
     except Exception:
         raise HTTPException(status_code=503, detail="Could not reach the database. Please try again shortly.")
 
@@ -58,9 +58,9 @@ def trace_topic(topic: str):
             real_cluster.append(story)
 
     ranked = rank_by_originality(real_cluster)
-    confidence = calculate_confidence(real_cluster, ranked["original_source"])
+    confidence = calculate_confidence(real_cluster, ranked["first_observed_source"])
 
-    published_at_str = ranked["original_source"].get("published_at")
+    published_at_str = ranked["first_observed_source"].get("published_at")
     is_stale = False
     hours_since_published = None
     if published_at_str:
@@ -75,17 +75,31 @@ def trace_topic(topic: str):
         "note": "This confidence score may be outdated and hasn't been re-verified recently." if is_stale else "Recently verified."
     }
 
-    url_check = supabase.table("stories").select("*").eq("url", ranked["original_source"]["url"]).execute()
-    has_correction = len(url_check.data) > 1 and any(
-        s["headline"] != ranked["original_source"]["headline"] for s in url_check.data
-    )
+    CORRECTION_SIMILARITY_THRESHOLD = 0.85
+    first_source = ranked["first_observed_source"]
+    has_correction = False
+    for story in real_cluster:
+        if story is first_source:
+            continue
+        if story.get("source_id") != first_source.get("source_id"):
+            continue
+        if story.get("url") == first_source.get("url"):
+            continue
+        if story.get("headline") == first_source.get("headline"):
+            continue
+        sim = compute_similarity(
+            first_source["headline"] + " " + (first_source.get("snippet") or ""),
+            story["headline"] + " " + (story.get("snippet") or "")
+        )
+        if sim >= CORRECTION_SIMILARITY_THRESHOLD:
+            has_correction = True
 
     all_sources = supabase.table("sources").select("id, name").execute()
     covering_source_ids = {s["source_id"] for s in real_cluster if s.get("source_id")}
     silent_sources = [s["name"] for s in all_sources.data if s["id"] not in covering_source_ids]
 
     result = {
-        "original_source": ranked["original_source"],
+        "first_observed_source": ranked["first_observed_source"],
         "syndicated_sources": ranked["syndicated_sources"],
         "confidence": confidence,
         "correction_detected": has_correction,

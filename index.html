@@ -457,10 +457,10 @@
             });
 
             articles.forEach((art) => {
-                const rel = art.relation_to_cluster || (art.is_first_observed ? "original_source" : "independent_confirmation");
-                const relLabel = art.relation_label || (rel === "original_source" ? "Original Source" : rel === "syndicated_copy" ? "Syndicated Copy" : "Independent Confirmation");
+                const rel = art.relation_to_cluster || (art.is_first_observed ? "first_observed_source" : "independent_confirmation");
+                const relLabel = art.relation_label || (rel === "first_observed_source" ? "First Observed in SourceTrace" : rel === "syndicated_copy" ? "Syndicated Copy" : "Independent Confirmation");
                 
-                const badgeStyle = rel === "original_source" 
+                const badgeStyle = rel === "first_observed_source" 
                     ? "bg-emerald-100 text-emerald-800 border-emerald-300" 
                     : rel === "syndicated_copy" 
                     ? "bg-blue-100 text-blue-800 border-blue-300" 
