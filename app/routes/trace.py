@@ -23,7 +23,7 @@ def trace_topic(topic: str):
         return cached
 
     try:
-        response = supabase.table("stories").select("*").limit(300).execute()
+        response = supabase.table("stories").select("*").order("published_at", desc=True).limit(300).execute()
     except Exception:
         raise HTTPException(status_code=503, detail="Could not reach the database. Please try again shortly.")
 

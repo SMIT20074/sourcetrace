@@ -257,6 +257,15 @@
             </p>
         </div>
 
+        <!-- Error State (shown when backend is unreachable) -->
+        <div id="error-state" class="hidden text-center max-w-xl mx-auto py-16">
+            <span class="material-symbols-outlined text-rose-400 text-6xl mb-4">cloud_off</span>
+            <h3 class="font-display font-semibold text-lg text-primary mb-2">Couldn't Reach the Server</h3>
+            <p class="text-sm text-outline">
+                We couldn't load live data right now. Please try again in a moment.
+            </p>
+        </div>
+
     </main>
 
     <!-- Footer -->
@@ -285,105 +294,8 @@
     <!-- Interactive script logic -->
     <script>
         // High fidelity mock data for offline fallback
-        const MOCK_DATA = {
-            "cricket world cup": {
-                "trace": {
-                    "original_source": {
-                        "headline": "ICC officially announces tournament schedule and host venues for upcoming World Cup",
-                        "url": "https://www.cricketweekly.org/icc-world-cup-schedule",
-                        "published_at": "2026-07-25T08:00:00Z",
-                        "snippet": "The ICC has finalized all venues and dates for the Cricket World Cup, locking in stadiums across the host nations. Tickets will go on sale starting early next month."
-                    },
-                    "syndicated_sources": [
-                        { "headline": "World Cup host venues locked in by ICC", "url": "https://www.sportsglobe.com/world-cup-venues", "published_at": "2026-07-25T09:15:00Z" },
-                        { "headline": "ICC announces Cricket World Cup dates & venues", "url": "https://www.cricreport.in/icc-schedule-announced", "published_at": "2026-07-25T10:30:00Z" },
-                        { "headline": "Cricket World Cup schedule finalized", "url": "https://www.timesofsports.co.uk/world-cup-schedule", "published_at": "2026-07-25T11:45:00Z" }
-                    ],
-                    "confidence": {
-                        "score": 92,
-                        "factors": [
-                            "Matches official press release issued by the ICC central registry.",
-                            "3 independent syndicated corroborations from tier-1 sports networks.",
-                            "Metadata match on host coordination documents."
-                        ]
-                    },
-                    "correction_detected": false,
-                    "silent_sources": ["NDTV Sports", "ESPN Cricinfo"]
-                },
-                "ask": {
-                    "answer": "The ICC has officially announced the complete host venues and schedules for the upcoming Cricket World Cup. Venues have been distributed among major stadium hubs, and tickets are set to go on sale early next month.",
-                    "citations": [
-                        { "headline": "ICC Tournament Schedule announcement", "url": "https://www.cricketweekly.org/icc-world-cup-schedule" },
-                        { "headline": "SportsGlobe venues review", "url": "https://www.sportsglobe.com/world-cup-venues" }
-                    ],
-                    "confidence": "Verified"
-                }
-            },
-            "india protests": {
-                "trace": {
-                    "original_source": {
-                        "headline": "Demonstrations spark in Delhi over regional tariff updates",
-                        "url": "https://www.delhitimes.co.in/protests-tariff-updates",
-                        "published_at": "2026-07-24T14:20:00Z",
-                        "snippet": "Local union leaders call for protests following changes to regional transport tariffs. Demonstrations remain peaceful but have caused localized transit disruptions."
-                    },
-                    "syndicated_sources": [
-                        { "headline": "Delhi protests prompt traffic diversion", "url": "https://www.ndtv.com/traffic-updates-delhi", "published_at": "2026-07-24T15:45:00Z" },
-                        { "headline": "Protests erupt in Delhi over new transit taxes", "url": "https://www.timesofindia.com/protests-transit-taxes", "published_at": "2026-07-24T17:10:00Z" }
-                    ],
-                    "confidence": {
-                        "score": 78,
-                        "factors": [
-                            "Triangulated via two reputable local news networks.",
-                            "Headline modifications detected in secondary reports.",
-                            "Transit authorities issued corroborating detour route warnings."
-                        ]
-                    },
-                    "correction_detected": true,
-                    "silent_sources": ["The Hindu", "Reuters India"]
-                },
-                "ask": {
-                    "answer": "Protests have broken out in Delhi due to transport tariff changes. Traffic diversions have been implemented by local police, and while the gatherings remain peaceful, organizers are demanding a roll-back of the regional transit taxes.",
-                    "citations": [
-                        { "headline": "Delhi demonstrations overview", "url": "https://www.delhitimes.co.in/protests-tariff-updates" },
-                        { "headline": "Times of India coverage", "url": "https://www.timesofindia.com/protests-transit-taxes" }
-                    ],
-                    "confidence": "Cautionary"
-                }
-            },
-            "education policy": {
-                "trace": {
-                    "original_source": {
-                        "headline": "Ministry of Education drafts new curriculum framework for primary schools",
-                        "url": "https://www.educationgazette.gov.in/draft-curriculum",
-                        "published_at": "2026-07-23T11:00:00Z",
-                        "snippet": "The government has released a draft curriculum framework for primary education. The proposed changes focus on early language acquisition and foundation math modules."
-                    },
-                    "syndicated_sources": [
-                        { "headline": "Draft primary school curriculum released", "url": "https://www.indiascholars.com/curriculum-draft-released", "published_at": "2026-07-23T13:30:00Z" }
-                    ],
-                    "confidence": {
-                        "score": 45,
-                        "factors": [
-                            "Single source of origin (Ministry Draft portal).",
-                            "Limited primary syndicate coverage.",
-                            "Public review phase open for comments."
-                        ]
-                    },
-                    "correction_detected": false,
-                    "silent_sources": ["Times of India", "The Hindu", "NDTV"]
-                },
-                "ask": {
-                    "answer": "The Ministry of Education has drafted a revised primary school curriculum. The proposal introduces upgraded math and language modules and is currently open for public feedback.",
-                    "citations": [
-                        { "headline": "Government draft curriculum", "url": "https://www.educationgazette.gov.in/draft-curriculum" }
-                    ],
-                    "confidence": "Low Confidence (Early Stage)"
-                }
-            }
-        };
 
-        const API_BASE = "http://localhost:8000/api/v1";
+        const API_BASE = "https://sourcetrace-production-740a.up.railway.app/api/v1";
 
         // DOM elements
         const searchForm = document.getElementById("search-form");
@@ -392,6 +304,7 @@
         const skeletonLoader = document.getElementById("skeleton-loader");
         const dashboard = document.getElementById("dashboard");
         const modeBanner = document.getElementById("mode-banner");
+        const errorState = document.getElementById("error-state");
         
         const statStatus = document.getElementById("stat-status");
         const statSyndicated = document.getElementById("stat-syndicated");
@@ -439,6 +352,7 @@
             welcomeState.classList.add("hidden");
             dashboard.classList.add("hidden");
             modeBanner.classList.add("hidden");
+            errorState.classList.add("hidden");
             skeletonLoader.classList.remove("hidden");
 
             try {
@@ -459,42 +373,20 @@
                 const traceData = await traceRes.json();
                 const askData = await askRes.json();
 
-                renderResults(traceData, askData, false);
+                renderResults(traceData, askData);
             } catch (err) {
-                console.warn("Backend API not reachable. Using offline Mock Mode.", err);
-                
-                // Simulate network latency for mock data loading feel
-                setTimeout(() => {
-                    // Try to match search term with mock data keys, otherwise generate fallback
-                    const cleanQuery = query.toLowerCase();
-                    let matchedMock = null;
-                    
-                    for (const key in MOCK_DATA) {
-                        if (cleanQuery.includes(key) || key.includes(cleanQuery)) {
-                            matchedMock = MOCK_DATA[key];
-                            break;
-                        }
-                    }
-
-                    if (!matchedMock) {
-                        matchedMock = generateDynamicMock(query);
-                    }
-
-                    renderResults(matchedMock.trace, matchedMock.ask, true);
-                }, 1000);
+                console.error("Backend API not reachable.", err);
+                skeletonLoader.classList.add("hidden");
+                dashboard.classList.add("hidden");
+                errorState.classList.remove("hidden");
             }
         }
 
-        function renderResults(trace, ask, isMock) {
+        function renderResults(trace, ask) {
             // Hide Loader & Show Dashboard
             skeletonLoader.classList.add("hidden");
             dashboard.classList.remove("hidden");
-
-            if (isMock) {
-                modeBanner.classList.remove("hidden");
-            } else {
-                modeBanner.classList.add("hidden");
-            }
+            modeBanner.classList.add("hidden");
 
             // Handle empty results returned by backend
             if (trace.message) {
@@ -652,43 +544,6 @@
         }
 
         // Generate dynamic mocked response for any random query
-        function generateDynamicMock(query) {
-            const mockOutlet = ["TechNews", "Global Times", "Capital Post", "Newsmakers", "Press Trust"][Math.floor(Math.random() * 5)];
-            const score = Math.floor(Math.random() * 50) + 40; // 40 - 90
-            const capitalizedQuery = query.charAt(0).toUpperCase() + query.slice(1);
-            
-            return {
-                "trace": {
-                    "original_source": {
-                        "headline": `Exclusive report detailing recent updates on ${capitalizedQuery}`,
-                        "url": `https://www.${mockOutlet.toLowerCase().replace(/\s+/g, '')}.com/reports/${encodeURIComponent(query)}`,
-                        "published_at": new Date(Date.now() - 3600000 * 3).toISOString(),
-                        "snippet": `Sources confirm that several updates have recently emerged surrounding ${query}. Analysts suggest that this development may significantly influence regional policy in the next quarter.`
-                    },
-                    "syndicated_sources": [
-                        { "headline": `New details emerge on ${capitalizedQuery}`, "url": "https://www.newsnetwork.com/details-emerge", "published_at": new Date(Date.now() - 3600000 * 2).toISOString() },
-                        { "headline": `Analysis of the recent ${capitalizedQuery} situation`, "url": "https://www.dailyfeed.co.uk/analysis-situation", "published_at": new Date(Date.now() - 3600000).toISOString() }
-                    ],
-                    "confidence": {
-                        "score": score,
-                        "factors": [
-                            "Matches core parameters extracted from the primary reporting entity.",
-                            "Validated by cross-referencing timeline indices.",
-                            "Topic patterns suggest localized dissemination."
-                        ]
-                    },
-                    "correction_detected": Math.random() > 0.5,
-                    "silent_sources": ["BBC News", "Reuters", "The Associated Press"]
-                },
-                "ask": {
-                    "answer": `Based on verified reports, the situation regarding ${query} is evolving. First reported by ${mockOutlet}, the story covers key developments with support from subsequent syndicated reports, while some major global networks remain silent.`,
-                    "citations": [
-                        { "headline": `Exclusive report on ${capitalizedQuery}`, "url": `https://www.${mockOutlet.toLowerCase().replace(/\s+/g, '')}.com/reports` }
-                    ],
-                    "confidence": "Triangulated (Mock)"
-                }
-            };
-        }
 
         // Helpers
         function getDomainName(url) {

@@ -17,13 +17,20 @@ def get_hot_topics(hours: int = 72, limit: int = 10):
     cutoff = (datetime.now(timezone.utc) - timedelta(hours=hours)).isoformat()
 
     try:
-        response = supabase.table("stories").select("*").gte("published_at", cutoff).limit(300).execute()
+        response = supabase.table("stories").select("*").gte("published_at", cutoff).order("published_at", desc=True).limit(300).execute()
     except Exception:
         raise HTTPException(status_code=503, detail="Could not reach the database. Please try again shortly.")
 
     stories = response.data
     if not stories:
-        return {"topics": []}
+        return {
+            "topics": [],
+            "diagnostics": {
+                "stories_in_window": 0,
+                "candidate_clusters": 0,
+                "reason": f"No stories were found in the last {hours} hours."
+            }
+        }
 
     clusters = cluster_stories(stories)
     multi_source_clusters = [c for c in clusters if len(c) > 1]
@@ -40,5 +47,16 @@ def get_hot_topics(hours: int = 72, limit: int = 10):
             "original_source": ranked["original_source"],
             "syndicated_sources": ranked["syndicated_sources"],
         })
+
+    if not topics:
+        return {
+            "topics": [],
+            "diagnostics": {
+                "stories_in_window": len(stories),
+                "candidate_clusters": len(clusters),
+                "multi_source_clusters": len(multi_source_clusters),
+                "reason": "Stories were found, but none were corroborated by more than one outlet in this window."
+            }
+        }
 
     return {"topics": topics}
