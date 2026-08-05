@@ -80,3 +80,20 @@ def cluster_stories(stories: list[dict], threshold: float = 0.75) -> list[list[d
         clusters.append(cluster)
 
     return clusters
+
+
+SYNDICATION_SIMILARITY_THRESHOLD = 0.85
+
+
+def is_cross_outlet_syndication(article: dict, reference: dict, threshold: float = SYNDICATION_SIMILARITY_THRESHOLD) -> bool:
+    """
+    Returns True if `article` is a near-identical copy of `reference`'s content
+    (e.g. both republishing the same wire story), even though they're from
+    different domains/outlets. This catches syndicated wire content that a
+    same-domain-only check would miss.
+    """
+    sim = compute_similarity(
+        reference.get("headline", "") + " " + (reference.get("snippet") or ""),
+        article.get("headline", "") + " " + (article.get("snippet") or "")
+    )
+    return sim >= threshold

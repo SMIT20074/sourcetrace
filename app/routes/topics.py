@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta, timezone
 from fastapi import APIRouter, HTTPException
 from app.services.db import supabase
-from app.services.dedup import compute_similarity, cluster_stories, rank_by_originality
+from app.services.dedup import compute_similarity, cluster_stories, rank_by_originality, is_cross_outlet_syndication
 from app.services.scoring import calculate_confidence
 from app.services.cache import get_cached, set_cached
 
@@ -121,6 +121,10 @@ def search_topics(topic: str, hours: int = 168):
                 rel = "first_observed_source"
                 rel_label = "First Observed in SourceTrace"
             elif art_domain and art_domain == first_domain:
+                rel = "syndicated_copy"
+                rel_label = "Syndicated Copy"
+            elif is_cross_outlet_syndication(article, first_observed):
+                # Different outlet, but near-identical content (e.g. same wire story) -- still a copy, not a real confirmation.
                 rel = "syndicated_copy"
                 rel_label = "Syndicated Copy"
             else:

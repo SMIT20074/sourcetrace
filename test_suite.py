@@ -148,3 +148,79 @@ def test_db_failure_does_not_crash_caller():
 
     assert result is not None
     assert "error" in result
+
+
+# ---- Step 2: cross-outlet syndication detection ----
+
+def test_cross_outlet_wire_copy_tagged_as_syndicated():
+    from app.services.dedup import is_cross_outlet_syndication
+    first = make_story("1", "PM announces new policy today", snippet="The Prime Minister announced a new economic policy today.", source_id="src-A")
+    wire_copy = make_story("2", "PM announces new policy today", snippet="The Prime Minister announced a new economic policy today.", source_id="src-B")
+    assert is_cross_outlet_syndication(wire_copy, first) is True
+
+
+def test_genuinely_different_coverage_not_tagged_as_syndicated():
+    from app.services.dedup import is_cross_outlet_syndication
+    first = make_story("1", "PM announces new policy today", snippet="The Prime Minister announced a new economic policy today.", source_id="src-A")
+    different_angle = make_story("2", "Opposition criticizes new policy", snippet="Opposition leaders called the new policy short-sighted and rushed.", source_id="src-B")
+    assert is_cross_outlet_syndication(different_angle, first) is False
+
+
+def test_cross_verification_excludes_cross_outlet_wire_copies():
+    first = make_story("1", "PM announces new policy today", snippet="The Prime Minister announced a new economic policy today.", source_id="src-A")
+    wire_copies = [
+        make_story(str(i), "PM announces new policy today", snippet="The Prime Minister announced a new economic policy today.", source_id=f"src-{i}")
+        for i in range(2, 5)
+    ]
+    cluster = [first] + wire_copies
+    confidence = calculate_confidence(cluster, first)
+    assert confidence["breakdown"]["cross_verification"] == 0
+
+
+def test_cross_verification_still_counts_real_independent_coverage():
+    first = make_story("1", "PM announces new policy today", snippet="The Prime Minister announced a new economic policy today.", source_id="src-A")
+    independents = [
+        make_story("2", "Opposition slams new policy", snippet="Opposition leaders called the new policy short-sighted.", source_id="src-B"),
+        make_story("3", "Markets react to policy shift", snippet="Stock indices moved following the announcement.", source_id="src-C"),
+    ]
+    cluster = [first] + independents
+    confidence = calculate_confidence(cluster, first)
+    assert confidence["breakdown"]["cross_verification"] == 20
+
+
+# ---- Step 2: cross-outlet syndication detection ----
+
+def test_cross_outlet_wire_copy_tagged_as_syndicated():
+    from app.services.dedup import is_cross_outlet_syndication
+    first = make_story("1", "PM announces new policy today", snippet="The Prime Minister announced a new economic policy today.", source_id="src-A")
+    wire_copy = make_story("2", "PM announces new policy today", snippet="The Prime Minister announced a new economic policy today.", source_id="src-B")
+    assert is_cross_outlet_syndication(wire_copy, first) is True
+
+
+def test_genuinely_different_coverage_not_tagged_as_syndicated():
+    from app.services.dedup import is_cross_outlet_syndication
+    first = make_story("1", "PM announces new policy today", snippet="The Prime Minister announced a new economic policy today.", source_id="src-A")
+    different_angle = make_story("2", "Opposition criticizes new policy", snippet="Opposition leaders called the new policy short-sighted and rushed.", source_id="src-B")
+    assert is_cross_outlet_syndication(different_angle, first) is False
+
+
+def test_cross_verification_excludes_cross_outlet_wire_copies():
+    first = make_story("1", "PM announces new policy today", snippet="The Prime Minister announced a new economic policy today.", source_id="src-A")
+    wire_copies = [
+        make_story(str(i), "PM announces new policy today", snippet="The Prime Minister announced a new economic policy today.", source_id=f"src-{i}")
+        for i in range(2, 5)
+    ]
+    cluster = [first] + wire_copies
+    confidence = calculate_confidence(cluster, first)
+    assert confidence["breakdown"]["cross_verification"] == 0
+
+
+def test_cross_verification_still_counts_real_independent_coverage():
+    first = make_story("1", "PM announces new policy today", snippet="The Prime Minister announced a new economic policy today.", source_id="src-A")
+    independents = [
+        make_story("2", "Opposition slams new policy", snippet="Opposition leaders called the new policy short-sighted.", source_id="src-B"),
+        make_story("3", "Markets react to policy shift", snippet="Stock indices moved following the announcement.", source_id="src-C"),
+    ]
+    cluster = [first] + independents
+    confidence = calculate_confidence(cluster, first)
+    assert confidence["breakdown"]["cross_verification"] == 20

@@ -26,10 +26,18 @@ def get_claim_type(headline: str, snippet: str = "") -> str:
 
 
 def calculate_confidence(cluster_stories: list[dict], first_observed_source: dict) -> dict:
-    distinct_publisher_ids = {
-        s.get("source_id") for s in cluster_stories
-        if s.get("source_id") and s.get("source_id") != first_observed_source.get("source_id")
-    }
+    from app.services.dedup import is_cross_outlet_syndication
+
+    distinct_publisher_ids = set()
+    for s in cluster_stories:
+        sid = s.get("source_id")
+        if not sid or sid == first_observed_source.get("source_id"):
+            continue
+        if is_cross_outlet_syndication(s, first_observed_source):
+            # Near-identical content from a different outlet (e.g. same wire story) --
+            # a copy, not an independent confirmation. Don't count it.
+            continue
+        distinct_publisher_ids.add(sid)
     independent_count = len(distinct_publisher_ids)
     # 4 Reframed Component Scores matching Build Plan:
     source_track_record = 20 if (first_observed_source.get("source_id") or first_observed_source.get("publisher")) else 10
